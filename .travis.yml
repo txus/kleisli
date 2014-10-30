@@ -1,0 +1,10 @@
+language: ruby
+rvm:
+  - 1.9.3
+  - 2.1.2
+  - rbx-2
+  - ruby-head
+  - jruby-head
+
+script:
+- rake
