@@ -21,7 +21,49 @@ For all its monads, Kleisli implements `return` (we call it `lift` instead, as
 which for each monad below).
 
 Kleisli uses a clever Ruby syntax trick to implement the `bind` operator, which
-looks like this: `>->`. We will probably burn in hell for this.
+looks like this: `>->` when used with a block. We will probably burn in hell
+for this. You can also use `>` or `>>` if you're going to pass in a proc or
+  lambda object.
+
+### Function composition
+
+You can use Haskell-like function composition with F and the familiar `.`. This
+is such a perversion of Ruby syntax that Matz would probably condemn this:
+
+Think of `F` as the identity function. Although it's just a hack to make it
+work in Ruby.
+
+```ruby
+# Reminder that (f . g) x= f(g(x))
+f = F . first . last
+f.call [[1,2], [3,4]]
+# => 3
+
+f = F . capitalize . reverse
+f.call "hello"
+# => "Olleh"
+```
+
+Functions and methods are interchangeable:
+
+```ruby
+def foo(s)
+  s.reverse
+end
+
+f = F . capitalize . foo
+f.call "hello"
+# => "Olleh"
+```
+
+All functions and methods are partially applicable:
+
+```ruby
+
+f = F . split(":") . strip
+puts f.call "  localhost:9092     "
+# => ["localhost", "9092"]
+```
 
 ## Maybe monad
 
@@ -45,6 +87,9 @@ maybe_user = Maybe(user) >-> user {
 # You can also use Some and None as type constructors yourself.
 x = Some(10)
 y = None()
+
+# Now using fancy point-free style:
+Maybe(user) >> F . Maybe . address >> F . Maybe . street
 ```
 
 ### `fmap`

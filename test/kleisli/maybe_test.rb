@@ -10,11 +10,11 @@ class MaybeTest < MiniTest::Unit::TestCase
   end
 
   def test_bind_none
-    assert_equal None(), None() >-> x { Maybe(x * 2) }
+    assert_equal None(), None() >> F . Maybe . *(2)
   end
 
   def test_bind_some
-    assert_equal Some(6), Some(3) >-> x { Maybe(x * 2) }
+    assert_equal Some(6), Some(3) >> F . Maybe . *(2)
   end
 
   def test_fmap_none
