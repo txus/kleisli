@@ -55,7 +55,47 @@ of concept.</p>
 which for each monad below).</p>
 
 <p>Kleisli uses a clever Ruby syntax trick to implement the <code>bind</code> operator, which
-looks like this: <code>&gt;-&gt;</code>. We will probably burn in hell for this.</p>
+looks like this: <code>&gt;-&gt;</code> when used with a block. We will probably burn in hell
+for this. You can also use <code>&gt;</code> or <code>&gt;&gt;</code> if you're going to pass in a proc or
+  lambda object.</p>
+
+<h3>
+<a name="function-composition" class="anchor" href="#function-composition"><span class="octicon octicon-link"></span></a>Function composition</h3>
+
+<p>You can use Haskell-like function composition with F and the familiar <code>.</code>. This
+is such a perversion of Ruby syntax that Matz would probably condemn this:</p>
+
+<p>Think of <code>F</code> as the identity function. Although it's just a hack to make it
+work in Ruby.</p>
+
+<div class="highlight highlight-ruby"><pre><span class="c1"># Reminder that (f . g) x= f(g(x))</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">F</span> <span class="o">.</span> <span class="n">first</span> <span class="o">.</span> <span class="n">last</span>
+<span class="n">f</span><span class="o">.</span><span class="n">call</span> <span class="o">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="o">]</span><span class="p">,</span> <span class="o">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="o">]]</span>
+<span class="c1"># =&gt; 3</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">F</span> <span class="o">.</span> <span class="n">capitalize</span> <span class="o">.</span> <span class="n">reverse</span>
+<span class="n">f</span><span class="o">.</span><span class="n">call</span> <span class="s2">"hello"</span>
+<span class="c1"># =&gt; "Olleh"</span>
+</pre></div>
+
+<p>Functions and methods are interchangeable:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+  <span class="n">s</span><span class="o">.</span><span class="n">reverse</span>
+<span class="k">end</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">F</span> <span class="o">.</span> <span class="n">capitalize</span> <span class="o">.</span> <span class="n">foo</span>
+<span class="n">f</span><span class="o">.</span><span class="n">call</span> <span class="s2">"hello"</span>
+<span class="c1"># =&gt; "Olleh"</span>
+</pre></div>
+
+<p>All functions and methods are partially applicable:</p>
+
+<div class="highlight highlight-ruby"><pre>
+<span class="n">f</span> <span class="o">=</span> <span class="n">F</span> <span class="o">.</span> <span class="nb">split</span><span class="p">(</span><span class="s2">":"</span><span class="p">)</span> <span class="o">.</span> <span class="n">strip</span>
+<span class="nb">puts</span> <span class="n">f</span><span class="o">.</span><span class="n">call</span> <span class="s2">"  localhost:9092     "</span>
+<span class="c1"># =&gt; ["localhost", "9092"]</span>
+</pre></div>
 
 <h2>
 <a name="maybe-monad" class="anchor" href="#maybe-monad"><span class="octicon octicon-link"></span></a>Maybe monad</h2>
@@ -81,6 +121,9 @@ return nil at any point. <code>user.address.street</code> anyone?</p>
 <span class="c1"># You can also use Some and None as type constructors yourself.</span>
 <span class="n">x</span> <span class="o">=</span> <span class="no">Some</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 <span class="n">y</span> <span class="o">=</span> <span class="no">None</span><span class="p">()</span>
+
+<span class="c1"># Now using fancy point-free style:</span>
+<span class="no">Maybe</span><span class="p">(</span><span class="n">user</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">F</span> <span class="o">.</span> <span class="no">Maybe</span> <span class="o">.</span> <span class="n">address</span> <span class="o">&gt;&gt;</span> <span class="n">F</span> <span class="o">.</span> <span class="no">Maybe</span> <span class="o">.</span> <span class="n">street</span>
 </pre></div>
 
 <h3>
