@@ -5,7 +5,7 @@ module Kleisli
     end
 
     def mempty
-      raise NotImplementedError, "this monoid doesn't implement mpemty"
+      raise NotImplementedError, "this monoid doesn't implement mempty"
     end
 
     def mappend(other)
