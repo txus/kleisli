@@ -24,4 +24,14 @@ class TryTest < MiniTest::Unit::TestCase
   def test_fmap_failure
     assert_kind_of ZeroDivisionError, Try { 10 / 0 }.fmap { |x| x * 2 }.exception
   end
+
+  def test_bind
+    try = Try { 20 / 10 } >-> number { Try { 10 / number } }
+    assert_equal 5, try.value
+  end
+
+  def test_pointfree
+    try = Try { 20 / 10 } >> F . Try { 10 / 2 }
+    assert_equal 5, try.value
+  end
 end
