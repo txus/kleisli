@@ -1,4 +1,4 @@
-# Kleisli
+# Kleisli [![Build Status](https://secure.travis-ci.org/txus/adts.png)](http://travis-ci.org/txus/adts)
 
 An idiomatic, clean implementation of a few common useful monads in Ruby,
 written by [Ryan Levick][rylev] and me.
