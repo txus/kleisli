@@ -32,7 +32,8 @@
 
         <section id="main_content">
           <h1>
-<a name="kleisli" class="anchor" href="#kleisli"><span class="octicon octicon-link"></span></a>Kleisli</h1>
+<a id="kleisli-" class="anchor" href="#kleisli-" aria-hidden="true"><span class="octicon octicon-link"></span></a>Kleisli <a href="http://travis-ci.org/txus/adts"><img src="https://secure.travis-ci.org/txus/adts.png" alt="Build Status"></a>
+</h1>
 
 <p>An idiomatic, clean implementation of a few common useful monads in Ruby,
 written by <a href="https://github.com/rylev">Ryan Levick</a> and me.</p>
@@ -42,13 +43,12 @@ of concept.</p>
 
 <p>In your Gemfile:</p>
 
-<div class="highlight highlight-ruby"><pre><span class="n">gem</span> <span class="s1">'kleisli'</span>
-</pre></div>
+<div class="highlight highlight-ruby"><pre><span class="nb">gem</span> <span class="s1">'kleisli'</span></pre></div>
 
 <p>We would like to thank Curry and Howard for their correspondence.</p>
 
 <h2>
-<a name="notation" class="anchor" href="#notation"><span class="octicon octicon-link"></span></a>Notation</h2>
+<a id="notation" class="anchor" href="#notation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Notation</h2>
 
 <p>For all its monads, Kleisli implements <code>return</code> (we call it <code>lift</code> instead, as
 <code>return</code> is a reserved keyword in Ruby) with convenience global methods (see
@@ -60,7 +60,7 @@ for this. You can also use <code>&gt;</code> or <code>&gt;&gt;</code> if you're 
   lambda object.</p>
 
 <h3>
-<a name="function-composition" class="anchor" href="#function-composition"><span class="octicon octicon-link"></span></a>Function composition</h3>
+<a id="function-composition" class="anchor" href="#function-composition" aria-hidden="true"><span class="octicon octicon-link"></span></a>Function composition</h3>
 
 <p>You can use Haskell-like function composition with F and the familiar <code>.</code>. This
 is such a perversion of Ruby syntax that Matz would probably condemn this:</p>
@@ -69,49 +69,46 @@ is such a perversion of Ruby syntax that Matz would probably condemn this:</p>
 work in Ruby.</p>
 
 <div class="highlight highlight-ruby"><pre><span class="c1"># Reminder that (f . g) x= f(g(x))</span>
-<span class="n">f</span> <span class="o">=</span> <span class="n">F</span> <span class="o">.</span> <span class="n">first</span> <span class="o">.</span> <span class="n">last</span>
-<span class="n">f</span><span class="o">.</span><span class="n">call</span> <span class="o">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="o">]</span><span class="p">,</span> <span class="o">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="o">]]</span>
+f <span class="o">=</span> <span class="no">F</span> . first . last
+f.call <span class="o">[[</span><span class="m">1</span>,<span class="m">2</span><span class="o">]</span>, <span class="o">[</span><span class="m">3</span>,<span class="m">4</span><span class="o">]]</span>
 <span class="c1"># =&gt; 3</span>
 
-<span class="n">f</span> <span class="o">=</span> <span class="n">F</span> <span class="o">.</span> <span class="n">capitalize</span> <span class="o">.</span> <span class="n">reverse</span>
-<span class="n">f</span><span class="o">.</span><span class="n">call</span> <span class="s2">"hello"</span>
-<span class="c1"># =&gt; "Olleh"</span>
-</pre></div>
+f <span class="o">=</span> <span class="no">F</span> . capitalize . reverse
+f.call <span class="s2">"hello"</span>
+<span class="c1"># =&gt; "Olleh"</span></pre></div>
 
 <p>Functions and methods are interchangeable:</p>
 
-<div class="highlight highlight-ruby"><pre><span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
-  <span class="n">s</span><span class="o">.</span><span class="n">reverse</span>
+<div class="highlight highlight-ruby"><pre><span class="k">def</span> <span class="nf">foo</span>(<span class="nv">s</span>)
+  s.reverse
 <span class="k">end</span>
 
-<span class="n">f</span> <span class="o">=</span> <span class="n">F</span> <span class="o">.</span> <span class="n">capitalize</span> <span class="o">.</span> <span class="n">foo</span>
-<span class="n">f</span><span class="o">.</span><span class="n">call</span> <span class="s2">"hello"</span>
-<span class="c1"># =&gt; "Olleh"</span>
-</pre></div>
+f <span class="o">=</span> <span class="no">F</span> . capitalize . foo
+f.call <span class="s2">"hello"</span>
+<span class="c1"># =&gt; "Olleh"</span></pre></div>
 
 <p>All functions and methods are partially applicable:</p>
 
 <div class="highlight highlight-ruby"><pre>
-<span class="n">f</span> <span class="o">=</span> <span class="n">F</span> <span class="o">.</span> <span class="nb">split</span><span class="p">(</span><span class="s2">":"</span><span class="p">)</span> <span class="o">.</span> <span class="n">strip</span>
-<span class="nb">puts</span> <span class="n">f</span><span class="o">.</span><span class="n">call</span> <span class="s2">"  localhost:9092     "</span>
-<span class="c1"># =&gt; ["localhost", "9092"]</span>
-</pre></div>
+f <span class="o">=</span> <span class="no">F</span> . split(<span class="s2">":"</span>) . strip
+puts f.call <span class="s2">"  localhost:9092     "</span>
+<span class="c1"># =&gt; ["localhost", "9092"]</span></pre></div>
 
 <h2>
-<a name="maybe-monad" class="anchor" href="#maybe-monad"><span class="octicon octicon-link"></span></a>Maybe monad</h2>
+<a id="maybe-monad" class="anchor" href="#maybe-monad" aria-hidden="true"><span class="octicon octicon-link"></span></a>Maybe monad</h2>
 
 <p>The Maybe monad is useful to express a pipeline of computations that might
 return nil at any point. <code>user.address.street</code> anyone?</p>
 
 <h3>
-<a name="--bind" class="anchor" href="#--bind"><span class="octicon octicon-link"></span></a>
+<a id="--bind" class="anchor" href="#--bind" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 <code>&gt;-&gt;</code> (bind)</h3>
 
 <div class="highlight highlight-ruby"><pre><span class="nb">require</span> <span class="s2">"kleisli"</span>
 
-<span class="n">maybe_user</span> <span class="o">=</span> <span class="no">Maybe</span><span class="p">(</span><span class="n">user</span><span class="p">)</span> <span class="o">&gt;-&gt;</span> <span class="n">user</span> <span class="p">{</span>
-  <span class="no">Maybe</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">address</span><span class="p">)</span> <span class="p">}</span> <span class="o">&gt;-&gt;</span> <span class="n">address</span> <span class="p">{</span>
-    <span class="no">Maybe</span><span class="p">(</span><span class="n">address</span><span class="o">.</span><span class="n">street</span><span class="p">)</span> <span class="p">}</span>
+maybe_user <span class="o">=</span> <span class="no">Maybe</span>(user) <span class="o">&gt;</span><span class="o">-</span><span class="o">&gt;</span> user {
+  <span class="no">Maybe</span>(user.address) } <span class="o">&gt;</span><span class="o">-</span><span class="o">&gt;</span> address {
+    <span class="no">Maybe</span>(address.street) }
 
 <span class="c1"># If user exists</span>
 <span class="c1"># =&gt; Some("Monad Street")</span>
@@ -119,73 +116,69 @@ return nil at any point. <code>user.address.street</code> anyone?</p>
 <span class="c1"># =&gt; None()</span>
 
 <span class="c1"># You can also use Some and None as type constructors yourself.</span>
-<span class="n">x</span> <span class="o">=</span> <span class="no">Some</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-<span class="n">y</span> <span class="o">=</span> <span class="no">None</span><span class="p">()</span>
+x <span class="o">=</span> <span class="no">Some</span>(<span class="m">10</span>)
+y <span class="o">=</span> <span class="no">None</span>()
 
 <span class="c1"># Now using fancy point-free style:</span>
-<span class="no">Maybe</span><span class="p">(</span><span class="n">user</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">F</span> <span class="o">.</span> <span class="no">Maybe</span> <span class="o">.</span> <span class="n">address</span> <span class="o">&gt;&gt;</span> <span class="n">F</span> <span class="o">.</span> <span class="no">Maybe</span> <span class="o">.</span> <span class="n">street</span>
-</pre></div>
+<span class="no">Maybe</span>(user) <span class="o">&gt;&gt;</span> <span class="no">F</span> . <span class="no">Maybe</span> . address <span class="o">&gt;&gt;</span> <span class="no">F</span> . <span class="no">Maybe</span> . street</pre></div>
 
 <h3>
-<a name="fmap" class="anchor" href="#fmap"><span class="octicon octicon-link"></span></a><code>fmap</code>
+<a id="fmap" class="anchor" href="#fmap" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>fmap</code>
 </h3>
 
 <div class="highlight highlight-ruby"><pre><span class="nb">require</span> <span class="s2">"kleisli"</span>
 
 <span class="c1"># If we know that a user always has an address with a street</span>
-<span class="no">Maybe</span><span class="p">(</span><span class="n">user</span><span class="p">)</span><span class="o">.</span><span class="n">fmap</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:address</span><span class="p">)</span><span class="o">.</span><span class="n">fmap</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:street</span><span class="p">)</span>
+<span class="no">Maybe</span>(user).fmap(<span class="o">&amp;</span><span class="ss">:address</span>).fmap(<span class="o">&amp;</span><span class="ss">:street</span>)
 
 <span class="c1"># If the user exists</span>
 <span class="c1"># =&gt; Some("Monad Street")</span>
 <span class="c1"># If the user is nil</span>
-<span class="c1"># =&gt; None()</span>
-</pre></div>
+<span class="c1"># =&gt; None()</span></pre></div>
 
 <h2>
-<a name="try" class="anchor" href="#try"><span class="octicon octicon-link"></span></a>Try</h2>
+<a id="try" class="anchor" href="#try" aria-hidden="true"><span class="octicon octicon-link"></span></a>Try</h2>
 
 <p>The Try monad is useful to express a pipeline of computations that might throw
 an exception at any point.</p>
 
 <h3>
-<a name="--bind-1" class="anchor" href="#--bind-1"><span class="octicon octicon-link"></span></a>
+<a id="--bind-1" class="anchor" href="#--bind-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 <code>&gt;-&gt;</code> (bind)</h3>
 
 <div class="highlight highlight-ruby"><pre><span class="nb">require</span> <span class="s2">"kleisli"</span>
 
-<span class="n">json_string</span> <span class="o">=</span> <span class="n">get_json_from_somewhere</span>
+json_string <span class="o">=</span> get_json_from_somewhere
 
-<span class="n">result</span> <span class="o">=</span> <span class="no">Try</span> <span class="p">{</span> <span class="no">JSON</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">json_string</span><span class="p">)</span> <span class="p">}</span> <span class="o">&gt;-&gt;</span> <span class="n">json</span> <span class="p">{</span>
-  <span class="no">Try</span> <span class="p">{</span> <span class="n">json</span><span class="o">[</span><span class="s2">"dividend"</span><span class="o">].</span><span class="n">to_i</span> <span class="o">/</span> <span class="n">json</span><span class="o">[</span><span class="s2">"divisor"</span><span class="o">].</span><span class="n">to_i</span> <span class="p">}</span>
-<span class="p">}</span>
+result <span class="o">=</span> <span class="no">Try</span> { <span class="no">JSON</span>.parse(json_string) } <span class="o">&gt;</span><span class="o">-</span><span class="o">&gt;</span> json {
+  <span class="no">Try</span> { json<span class="o">[</span><span class="s2">"dividend"</span><span class="o">]</span>.to_i <span class="o">/</span> json<span class="o">[</span><span class="s2">"divisor"</span><span class="o">]</span>.to_i }
+}
 
 <span class="c1"># If no exception was thrown:</span>
 
-<span class="n">result</span>       <span class="c1"># =&gt; #&lt;Try::Success @value=123&gt;</span>
-<span class="n">result</span><span class="o">.</span><span class="n">value</span> <span class="c1"># =&gt; 123</span>
+result       <span class="c1"># =&gt; #&lt;Try::Success @value=123&gt;</span>
+result.value <span class="c1"># =&gt; 123</span>
 
 <span class="c1"># If there was a ZeroDivisionError exception for example:</span>
 
-<span class="n">result</span>           <span class="c1"># =&gt; #&lt;Try::Failure @exception=#&lt;ZeroDivisionError ...&gt;&gt;</span>
-<span class="n">result</span><span class="o">.</span><span class="n">exception</span> <span class="c1"># =&gt; #&lt;ZeroDivisionError ...&gt;</span>
-</pre></div>
+result           <span class="c1"># =&gt; #&lt;Try::Failure @exception=#&lt;ZeroDivisionError ...&gt;&gt;</span>
+result.exception <span class="c1"># =&gt; #&lt;ZeroDivisionError ...&gt;</span></pre></div>
 
 <h3>
-<a name="fmap-1" class="anchor" href="#fmap-1"><span class="octicon octicon-link"></span></a><code>fmap</code>
+<a id="fmap-1" class="anchor" href="#fmap-1" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>fmap</code>
 </h3>
 
 <div class="highlight highlight-ruby"><pre><span class="nb">require</span> <span class="s2">"kleisli"</span>
 
-<span class="no">Try</span> <span class="p">{</span> <span class="no">JSON</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">json_string</span><span class="p">)</span> <span class="p">}</span><span class="o">.</span><span class="n">fmap</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:symbolize_keys</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+<span class="no">Try</span> { <span class="no">JSON</span>.parse(json_string) }.fmap(<span class="o">&amp;</span><span class="ss">:symbolize_keys</span>).value
 
 <span class="c1"># If everything went well:</span>
 <span class="c1"># =&gt; { :my =&gt; "json", :with =&gt; "symbolized keys" }</span>
 <span class="c1"># If an exception was thrown:</span>
-<span class="c1"># =&gt; nil</span>
-</pre></div>
+<span class="c1"># =&gt; nil</span></pre></div>
 
 <h3>
-<a name="to_maybe" class="anchor" href="#to_maybe"><span class="octicon octicon-link"></span></a><code>to_maybe</code>
+<a id="to_maybe" class="anchor" href="#to_maybe" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>to_maybe</code>
 </h3>
 
 <p>Sometimes it's useful to interleave both <code>Try</code> and <code>Maybe</code>. To convert a <code>Try</code>
@@ -193,16 +186,15 @@ into a <code>Maybe</code> you can use <code>to_maybe</code>:</p>
 
 <div class="highlight highlight-ruby"><pre><span class="nb">require</span> <span class="s2">"kleisli"</span>
 
-<span class="no">Try</span> <span class="p">{</span> <span class="no">JSON</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">json_string</span><span class="p">)</span> <span class="p">}</span><span class="o">.</span><span class="n">fmap</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:symbolize_keys</span><span class="p">)</span><span class="o">.</span><span class="n">to_maybe</span>
+<span class="no">Try</span> { <span class="no">JSON</span>.parse(json_string) }.fmap(<span class="o">&amp;</span><span class="ss">:symbolize_keys</span>).to_maybe
 
 <span class="c1"># If everything went well:</span>
 <span class="c1"># =&gt; Some({ :my =&gt; "json", :with =&gt; "symbolized keys" })</span>
 <span class="c1"># If an exception was thrown:</span>
-<span class="c1"># =&gt; None()</span>
-</pre></div>
+<span class="c1"># =&gt; None()</span></pre></div>
 
 <h2>
-<a name="either" class="anchor" href="#either"><span class="octicon octicon-link"></span></a>Either</h2>
+<a id="either" class="anchor" href="#either" aria-hidden="true"><span class="octicon octicon-link"></span></a>Either</h2>
 
 <p>The Either monad is useful to express a pipeline of computations that might return an error object with some information.</p>
 
@@ -211,58 +203,56 @@ into a <code>Maybe</code> you can use <code>to_maybe</code>:</p>
 <p>Think of it as exceptions without messing with the call stack.</p>
 
 <h3>
-<a name="--bind-2" class="anchor" href="#--bind-2"><span class="octicon octicon-link"></span></a>
+<a id="--bind-2" class="anchor" href="#--bind-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 <code>&gt;-&gt;</code> (bind)</h3>
 
 <div class="highlight highlight-ruby"><pre><span class="nb">require</span> <span class="s2">"kleisli"</span>
 
-<span class="n">result</span> <span class="o">=</span> <span class="no">Right</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">&gt;-&gt;</span> <span class="n">value</span> <span class="p">{</span>
-  <span class="k">if</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="mi">1</span>
-    <span class="no">Right</span><span class="p">(</span><span class="n">value</span> <span class="o">+</span> <span class="mi">3</span><span class="p">)</span>
+result <span class="o">=</span> <span class="no">Right</span>(<span class="m">3</span>) <span class="o">&gt;</span><span class="o">-</span><span class="o">&gt;</span> value {
+  <span class="k">if</span> value <span class="o">&gt;</span> <span class="m">1</span>
+    <span class="no">Right</span>(value <span class="o">+</span> <span class="m">3</span>)
   <span class="k">else</span>
-    <span class="no">Left</span><span class="p">(</span><span class="s2">"value was less or equal than 1"</span><span class="p">)</span>
+    <span class="no">Left</span>(<span class="s2">"value was less or equal than 1"</span>)
   <span class="k">end</span>
-<span class="p">}</span> <span class="o">&gt;-&gt;</span> <span class="n">value</span> <span class="p">{</span>
-  <span class="k">if</span> <span class="n">value</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span>
-    <span class="no">Right</span><span class="p">(</span><span class="n">value</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
+} <span class="o">&gt;</span><span class="o">-</span><span class="o">&gt;</span> value {
+  <span class="k">if</span> value <span class="o">%</span> <span class="m">2</span> <span class="o">==</span> <span class="m">0</span>
+    <span class="no">Right</span>(value <span class="o">*</span> <span class="m">2</span>)
   <span class="k">else</span>
-    <span class="no">Left</span><span class="p">(</span><span class="s2">"value was not even"</span><span class="p">)</span>
+    <span class="no">Left</span>(<span class="s2">"value was not even"</span>)
   <span class="k">end</span>
-<span class="p">}</span>
+}
 
 <span class="c1"># If everything went well</span>
-<span class="n">result</span> <span class="c1"># =&gt; Right(12)</span>
-<span class="n">result</span><span class="o">.</span><span class="n">value</span> <span class="c1"># =&gt; 12</span>
+result <span class="c1"># =&gt; Right(12)</span>
+result.value <span class="c1"># =&gt; 12</span>
 
 <span class="c1"># If it failed in the first block</span>
-<span class="n">result</span> <span class="c1"># =&gt; Left("value was less or equal than 1")</span>
-<span class="n">result</span><span class="o">.</span><span class="n">value</span> <span class="c1"># =&gt; "value was less or equal than 1"</span>
+result <span class="c1"># =&gt; Left("value was less or equal than 1")</span>
+result.value <span class="c1"># =&gt; "value was less or equal than 1"</span>
 
 <span class="c1"># If it failed in the second block</span>
-<span class="n">result</span> <span class="c1"># =&gt; Left("value was not even")</span>
-<span class="n">result</span><span class="o">.</span><span class="n">value</span> <span class="c1"># =&gt; "value was not even"</span>
-</pre></div>
+result <span class="c1"># =&gt; Left("value was not even")</span>
+result.value <span class="c1"># =&gt; "value was not even"</span></pre></div>
 
 <h3>
-<a name="fmap-2" class="anchor" href="#fmap-2"><span class="octicon octicon-link"></span></a><code>fmap</code>
+<a id="fmap-2" class="anchor" href="#fmap-2" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>fmap</code>
 </h3>
 
 <div class="highlight highlight-ruby"><pre><span class="nb">require</span> <span class="s2">"kleisli"</span>
 
-<span class="n">result</span> <span class="o">=</span> <span class="k">if</span> <span class="n">foo</span> <span class="o">&gt;</span> <span class="n">bar</span>
-  <span class="no">Right</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+result <span class="o">=</span> <span class="k">if</span> foo <span class="o">&gt;</span> bar
+  <span class="no">Right</span>(<span class="m">10</span>)
 <span class="k">else</span>
-  <span class="no">Left</span><span class="p">(</span><span class="s2">"wrong"</span><span class="p">)</span>
-<span class="k">end</span><span class="o">.</span><span class="n">fmap</span> <span class="p">{</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">2</span> <span class="p">}</span>
+  <span class="no">Left</span>(<span class="s2">"wrong"</span>)
+<span class="k">end</span>.fmap { <span class="o">|</span><span class="nv">x</span><span class="o">|</span> x <span class="o">*</span> <span class="m">2</span> }
 
 <span class="c1"># If everything went well</span>
-<span class="n">result</span> <span class="c1"># =&gt; Right(20)</span>
+result <span class="c1"># =&gt; Right(20)</span>
 <span class="c1"># If it didn't</span>
-<span class="n">result</span> <span class="c1"># =&gt; Left("wrong")</span>
-</pre></div>
+result <span class="c1"># =&gt; Left("wrong")</span></pre></div>
 
 <h3>
-<a name="to_maybe-1" class="anchor" href="#to_maybe-1"><span class="octicon octicon-link"></span></a><code>to_maybe</code>
+<a id="to_maybe-1" class="anchor" href="#to_maybe-1" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>to_maybe</code>
 </h3>
 
 <p>Sometimes it's useful to turn an <code>Either</code> into a <code>Maybe</code>. You can use
@@ -270,20 +260,19 @@ into a <code>Maybe</code> you can use <code>to_maybe</code>:</p>
 
 <div class="highlight highlight-ruby"><pre><span class="nb">require</span> <span class="s2">"kleisli"</span>
 
-<span class="n">result</span> <span class="o">=</span> <span class="k">if</span> <span class="n">foo</span> <span class="o">&gt;</span> <span class="n">bar</span>
-  <span class="no">Right</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+result <span class="o">=</span> <span class="k">if</span> foo <span class="o">&gt;</span> bar
+  <span class="no">Right</span>(<span class="m">10</span>)
 <span class="k">else</span>
-  <span class="no">Left</span><span class="p">(</span><span class="s2">"wrong"</span><span class="p">)</span>
-<span class="k">end</span><span class="o">.</span><span class="n">to_maybe</span>
+  <span class="no">Left</span>(<span class="s2">"wrong"</span>)
+<span class="k">end</span>.to_maybe
 
 <span class="c1"># If everything went well:</span>
-<span class="n">result</span> <span class="c1"># =&gt; Some(10)</span>
+result <span class="c1"># =&gt; Some(10)</span>
 <span class="c1"># If it didn't</span>
-<span class="n">result</span> <span class="c1"># =&gt; None()</span>
-</pre></div>
+result <span class="c1"># =&gt; None()</span></pre></div>
 
 <h2>
-<a name="writer" class="anchor" href="#writer"><span class="octicon octicon-link"></span></a>Writer</h2>
+<a id="writer" class="anchor" href="#writer" aria-hidden="true"><span class="octicon octicon-link"></span></a>Writer</h2>
 
 <p>The Writer monad is arguably the least useful monad in Ruby (as side effects
 are uncontrolled), but let's take a look at it anyway.</p>
@@ -298,35 +287,33 @@ needs to be a Monoid, expressed in the <code>Kleisli::Monoid</code> mixin) at ea
 example a list of strings.</p>
 
 <h3>
-<a name="--bind-3" class="anchor" href="#--bind-3"><span class="octicon octicon-link"></span></a>
+<a id="--bind-3" class="anchor" href="#--bind-3" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 <code>&gt;-&gt;</code> (bind)</h3>
 
 <div class="highlight highlight-ruby"><pre><span class="nb">require</span> <span class="s2">"kleisli"</span>
 
-<span class="n">writer</span> <span class="o">=</span> <span class="no">Writer</span><span class="p">(</span><span class="o">[]</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span> <span class="o">&gt;-&gt;</span> <span class="n">value</span> <span class="p">{</span>
-  <span class="no">Writer</span><span class="p">(</span><span class="o">[</span><span class="s2">"added 100"</span><span class="o">]</span><span class="p">,</span> <span class="n">value</span> <span class="o">+</span> <span class="mi">100</span><span class="p">)</span>
-<span class="p">}</span> <span class="o">&gt;-&gt;</span> <span class="n">value</span> <span class="p">{</span>
-  <span class="no">Writer</span><span class="p">(</span><span class="o">[</span><span class="s2">"added 140 more"</span><span class="o">]</span><span class="p">,</span> <span class="n">value</span> <span class="o">+</span> <span class="mi">140</span><span class="p">)</span>
-<span class="p">}</span> <span class="c1"># =&gt; Writer(["added 100", "added 140 more"], 340)</span>
+writer <span class="o">=</span> <span class="no">Writer</span>(<span class="o">[</span><span class="o">]</span>, <span class="m">100</span>) <span class="o">&gt;</span><span class="o">-</span><span class="o">&gt;</span> value {
+  <span class="no">Writer</span>(<span class="o">[</span><span class="s2">"added 100"</span><span class="o">]</span>, value <span class="o">+</span> <span class="m">100</span>)
+} <span class="o">&gt;</span><span class="o">-</span><span class="o">&gt;</span> value {
+  <span class="no">Writer</span>(<span class="o">[</span><span class="s2">"added 140 more"</span><span class="o">]</span>, value <span class="o">+</span> <span class="m">140</span>)
+} <span class="c1"># =&gt; Writer(["added 100", "added 140 more"], 340)</span>
 
-<span class="n">log</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">writer</span><span class="o">.</span><span class="n">unwrap</span>
-<span class="n">log</span> <span class="c1"># =&gt; ["added 100", "added 140 more"]</span>
-<span class="n">value</span> <span class="c1"># =&gt; 340</span>
-</pre></div>
+log, value <span class="o">=</span> writer.unwrap
+log <span class="c1"># =&gt; ["added 100", "added 140 more"]</span>
+value <span class="c1"># =&gt; 340</span></pre></div>
 
 <h3>
-<a name="fmap-3" class="anchor" href="#fmap-3"><span class="octicon octicon-link"></span></a><code>fmap</code>
+<a id="fmap-3" class="anchor" href="#fmap-3" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>fmap</code>
 </h3>
 
 <div class="highlight highlight-ruby"><pre><span class="nb">require</span> <span class="s2">"kleisli"</span>
 
-<span class="n">writer</span> <span class="o">=</span> <span class="no">Writer</span><span class="p">(</span><span class="o">[]</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">fmap</span> <span class="p">{</span> <span class="o">|</span><span class="n">value</span><span class="o">|</span>
-  <span class="n">value</span> <span class="o">+</span> <span class="mi">100</span>
-<span class="p">}</span> <span class="c1"># =&gt; Writer([], 200)</span>
-</pre></div>
+writer <span class="o">=</span> <span class="no">Writer</span>(<span class="o">[</span><span class="o">]</span>, <span class="m">100</span>).fmap { <span class="o">|</span><span class="nv">value</span><span class="o">|</span>
+  value <span class="o">+</span> <span class="m">100</span>
+} <span class="c1"># =&gt; Writer([], 200)</span></pre></div>
 
 <h2>
-<a name="future" class="anchor" href="#future"><span class="octicon octicon-link"></span></a>Future</h2>
+<a id="future" class="anchor" href="#future" aria-hidden="true"><span class="octicon octicon-link"></span></a>Future</h2>
 
 <p>The Future monad models a pipeline of computations that will happen in the future, as soon as the value needed for each step is available. It is useful to model, for example, a sequential chain of HTTP calls.</p>
 
@@ -334,40 +321,38 @@ example a list of strings.</p>
 lambdas, so you need to call <code>.call</code> on them. See the examples below.</p>
 
 <h3>
-<a name="--bind-4" class="anchor" href="#--bind-4"><span class="octicon octicon-link"></span></a>
+<a id="--bind-4" class="anchor" href="#--bind-4" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 <code>&gt;-&gt;</code> (bind)</h3>
 
 <div class="highlight highlight-ruby"><pre><span class="nb">require</span> <span class="s2">"kleisli"</span>
 
-<span class="n">f</span> <span class="o">=</span> <span class="no">Future</span><span class="p">(</span><span class="s2">"myendpoint.com"</span><span class="p">)</span> <span class="o">&gt;-&gt;</span> <span class="n">url</span> <span class="p">{</span>
-  <span class="no">Future</span> <span class="p">{</span> <span class="no">HTTP</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="o">.</span><span class="n">call</span><span class="p">)</span> <span class="p">}</span>
-<span class="p">}</span> <span class="o">&gt;-&gt;</span> <span class="n">response</span> <span class="p">{</span>
-  <span class="no">Future</span> <span class="p">{</span>
-    <span class="n">other_url</span> <span class="o">=</span> <span class="no">JSON</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">call</span><span class="o">.</span><span class="n">body</span><span class="p">)</span><span class="o">[</span><span class="ss">:other_url</span><span class="o">]</span>
-    <span class="no">HTTP</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">other_url</span><span class="p">)</span>
-  <span class="p">}</span>
-<span class="p">}</span> <span class="o">&gt;-&gt;</span> <span class="n">other_response</span> <span class="p">{</span>
-  <span class="no">Future</span> <span class="p">{</span> <span class="no">JSON</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">other_response</span><span class="o">.</span><span class="n">call</span><span class="o">.</span><span class="n">body</span><span class="p">)</span> <span class="p">}</span>
-<span class="p">}</span>
+f <span class="o">=</span> <span class="no">Future</span>(<span class="s2">"myendpoint.com"</span>) <span class="o">&gt;</span><span class="o">-</span><span class="o">&gt;</span> url {
+  <span class="no">Future</span> { <span class="no">HTTP</span>.get(url.call) }
+} <span class="o">&gt;</span><span class="o">-</span><span class="o">&gt;</span> response {
+  <span class="no">Future</span> {
+    other_url <span class="o">=</span> <span class="no">JSON</span>.parse(response.call.body)<span class="o">[</span><span class="ss">:other_url</span><span class="o">]</span>
+    <span class="no">HTTP</span>.get(other_url)
+  }
+} <span class="o">&gt;</span><span class="o">-</span><span class="o">&gt;</span> other_response {
+  <span class="no">Future</span> { <span class="no">JSON</span>.parse(other_response.call.body) }
+}
 
 <span class="c1"># Do some other stuff...</span>
 
-<span class="n">f</span><span class="o">.</span><span class="n">await</span> <span class="c1"># =&gt; block until the whole pipeline is realized</span>
-<span class="c1"># =&gt; { "my" =&gt; "response body" }</span>
-</pre></div>
+f.await <span class="c1"># =&gt; block until the whole pipeline is realized</span>
+<span class="c1"># =&gt; { "my" =&gt; "response body" }</span></pre></div>
 
 <h3>
-<a name="fmap-4" class="anchor" href="#fmap-4"><span class="octicon octicon-link"></span></a><code>fmap</code>
+<a id="fmap-4" class="anchor" href="#fmap-4" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>fmap</code>
 </h3>
 
 <div class="highlight highlight-ruby"><pre><span class="nb">require</span> <span class="s2">"kleisli"</span>
 
-<span class="no">Future</span> <span class="p">{</span> <span class="n">expensive_operation</span> <span class="p">}</span><span class="o">.</span><span class="n">fmap</span> <span class="p">{</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">2</span> <span class="p">}</span><span class="o">.</span><span class="n">await</span>
-<span class="c1"># =&gt; result of expensive_operation * 2</span>
-</pre></div>
+<span class="no">Future</span> { expensive_operation }.fmap { <span class="o">|</span><span class="nv">x</span><span class="o">|</span> x <span class="o">*</span> <span class="m">2</span> }.await
+<span class="c1"># =&gt; result of expensive_operation * 2</span></pre></div>
 
 <h2>
-<a name="whos-this" class="anchor" href="#whos-this"><span class="octicon octicon-link"></span></a>Who's this</h2>
+<a id="whos-this" class="anchor" href="#whos-this" aria-hidden="true"><span class="octicon octicon-link"></span></a>Who's this</h2>
 
 <p>This was made by <a href="http://blog.txus.io">Josep M. Bach (Txus)</a> and <a href="https://github.com/rylev">Ryan
 Levick</a> under the MIT license. We are <a href="https://twitter.com/txustice">@txustice</a> and
