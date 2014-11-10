@@ -92,6 +92,12 @@ y = None()
 Maybe(user) >> F . Maybe . address >> F . Maybe . street
 ```
 
+As always, using point-free style is much cleaner:
+
+```ruby
+Maybe(user) >> F . Maybe . address >> F . Maybe . street
+```
+
 ### `fmap`
 
 ```ruby
