@@ -18,10 +18,6 @@ module Kleisli
 
     def method_missing(m, *args, &block)
       fn = -> a, x {
-
-        puts "A: #{a.inspect}"
-        puts "M: #{m.inspect}"
-        puts "X: #{x.inspect}"
         if x.respond_to?(m)
           x.send(m, *a)
         else
