@@ -1,4 +1,4 @@
-require 'blankslate'
+require_relative 'blankslate'
 
 class Proc
   def self.comp(f, g)
