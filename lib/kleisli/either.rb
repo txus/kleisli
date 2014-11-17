@@ -27,6 +27,10 @@ module Kleisli
       def to_maybe
         Maybe::Some.new(@right)
       end
+
+      def or(other)
+        self
+      end
     end
 
     class Left < Either
@@ -46,6 +50,10 @@ module Kleisli
 
       def to_maybe
         Maybe::None.new
+      end
+
+      def or(other)
+        other
       end
     end
   end

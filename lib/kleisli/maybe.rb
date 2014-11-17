@@ -24,6 +24,10 @@ module Kleisli
       def >(block)
         self
       end
+
+      def or(other)
+        other
+      end
     end
 
     class Some < Maybe
@@ -37,6 +41,10 @@ module Kleisli
 
       def >(block)
         block.call(@value)
+      end
+
+      def or(other)
+        self
       end
     end
   end

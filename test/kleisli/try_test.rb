@@ -30,8 +30,8 @@ class TryTest < MiniTest::Unit::TestCase
     assert_equal 5, try.value
   end
 
-  def test_pointfree
-    try = Try { 20 / 10 } >> F . Try { 10 / 2 }
-    assert_equal 5, try.value
-  end
+  # def test_pointfree
+  #   try = Try { 20 / 10 } >> F . Try { 10 / 2 }
+  #   assert_equal 5, try.value
+  # end
 end

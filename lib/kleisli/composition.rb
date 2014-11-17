@@ -1,5 +1,3 @@
-require_relative 'blankslate'
-
 class Proc
   def self.comp(f, g)
     lambda { |*args| f[g[*args]] }
@@ -11,7 +9,9 @@ class Proc
 end
 
 module Kleisli
-  class ComposedFn < BlankSlate
+  class ComposedFn < BasicObject
+    include ::Kernel
+
     def initialize(fns=[])
       @fns = fns
     end
@@ -21,7 +21,7 @@ module Kleisli
         if x.respond_to?(m)
           x.send(m, *a)
         else
-          send(m, *a)
+          send(m, *[x, a])
         end
       }.curry[args]
       ComposedFn.new(@fns + [fn])
