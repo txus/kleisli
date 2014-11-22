@@ -1,0 +1,17 @@
+PATH
+  remote: .
+  specs:
+    kleisli (0.1.0)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    rake (10.3.2)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  bundler (~> 1.6)
+  kleisli!
+  rake (~> 10.0)
