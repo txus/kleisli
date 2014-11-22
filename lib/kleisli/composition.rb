@@ -1,3 +1,5 @@
+require_relative 'blank'
+
 class Proc
   def self.comp(f, g)
     lambda { |*args| f[g[*args]] }
@@ -9,7 +11,7 @@ class Proc
 end
 
 module Kleisli
-  class ComposedFn < BasicObject
+  class ComposedFn < Blank
     include ::Kernel
 
     def initialize(fns=[])

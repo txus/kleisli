@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# Note: BlankSlate was renamed to Blank to avoid collisions in this project.
+#
 #--
 # Copyright 2004, 2006 by Jim Weirich (jim@weirichhouse.org).
 # All rights reserved.
@@ -9,15 +11,15 @@
 #++
 
 ######################################################################
-# BlankSlate provides an abstract base class with no predefined
+# Blank provides an abstract base class with no predefined
 # methods (except for <tt>\_\_send__</tt> and <tt>\_\_id__</tt>).
-# BlankSlate is useful as a base class when writing classes that
+# Blank is useful as a base class when writing classes that
 # depend upon <tt>method_missing</tt> (e.g. dynamic proxies).
 #
-class BlankSlate
+class Blank
   class << self
 
-    # Hide the method named +name+ in the BlankSlate class.  Don't
+    # Hide the method named +name+ in the Blank class.  Don't
     # hide +instance_eval+ or any method beginning with "__".
     def hide(name)
       methods = instance_methods.map(&:to_sym)
@@ -48,21 +50,21 @@ end
 
 ######################################################################
 # Since Ruby is very dynamic, methods added to the ancestors of
-# BlankSlate <em>after BlankSlate is defined</em> will show up in the
-# list of available BlankSlate methods.  We handle this by defining a
+# Blank <em>after Blank is defined</em> will show up in the
+# list of available Blank methods.  We handle this by defining a
 # hook in the Object and Kernel classes that will hide any method
-# defined after BlankSlate has been loaded.
+# defined after Blank has been loaded.
 #
 module Kernel
   class << self
     alias_method :blank_slate_method_added, :method_added
 
     # Detect method additions to Kernel and remove them in the
-    # BlankSlate class.
+    # Blank class.
     def method_added(name)
       result = blank_slate_method_added(name)
       return result if self != Kernel
-      BlankSlate.hide(name)
+      Blank.hide(name)
       result
     end
   end
@@ -76,11 +78,11 @@ class Object
     alias_method :blank_slate_method_added, :method_added
 
     # Detect method additions to Object and remove them in the
-    # BlankSlate class.
+    # Blank class.
     def method_added(name)
       result = blank_slate_method_added(name)
       return result if self != Object
-      BlankSlate.hide(name)
+      Blank.hide(name)
       result
     end
 
@@ -103,7 +105,7 @@ class Module
     result = blankslate_original_append_features(mod)
     return result if mod != Object
     instance_methods.each do |name|
-      BlankSlate.hide(name)
+      Blank.hide(name)
     end
     result
   end
