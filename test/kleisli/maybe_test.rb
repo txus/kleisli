@@ -24,4 +24,16 @@ class MaybeTest < MiniTest::Unit::TestCase
   def test_fmap_some
     assert_equal Some(6), Some(3).fmap { |x| x * 2 }
   end
+
+  def test_applicative_functor_some_arity_1
+    assert_equal Some(20), Maybe(-> x { x * 2 }) * Maybe(10)
+  end
+
+  def test_applicative_functor_some_arity_2
+    assert_equal Some(20), Maybe(-> x, y { x * y }) * Maybe(10) * Maybe(2)
+  end
+
+  def test_applicative_functor_none
+    assert_equal None(), Maybe(-> x, y { x * y }) * None() * Maybe(2)
+  end
 end

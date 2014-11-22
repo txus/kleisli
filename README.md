@@ -23,7 +23,10 @@ which for each monad below).
 Kleisli uses a clever Ruby syntax trick to implement the `bind` operator, which
 looks like this: `>->` when used with a block. We will probably burn in hell
 for this. You can also use `>` or `>>` if you're going to pass in a proc or
-  lambda object.
+ lambda object.
+
+`Maybe` and `Either` are applicative functors with the apply operator `*`. Read
+further to see how it works.
 
 ### Function composition
 
@@ -119,6 +122,18 @@ Maybe(user).fmap(&:address).fmap(&:street)
 # => Some("Monad Street")
 # If the user is nil
 # => None()
+```
+
+### `*` (applicative functor's apply)
+
+```ruby
+require "kleisli"
+
+add = -> x, y { x + y }
+Some(add) * Some(10) * Some(2)
+# => Some(12)
+Some(add) * None() * Some(2)
+# => None
 ```
 
 ## Try
@@ -237,6 +252,18 @@ end.fmap { |x| x * 2 }
 result # => Right(20)
 # If it didn't
 result # => Left("wrong")
+```
+
+### `*` (applicative functor's apply)
+
+```ruby
+require "kleisli"
+
+add = -> x, y { x + y }
+Right(add) * Right(10) * Right(2)
+# => Some(12)
+Right(add) * Left("error") * Right(2)
+# => Left("error")
 ```
 
 ### `or`

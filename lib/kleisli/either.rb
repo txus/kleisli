@@ -9,6 +9,14 @@ module Kleisli
       right == other.right && left == other.left
     end
 
+    def *(other)
+      self >-> f {
+        other >-> val {
+          Right(f.arity > 1 ? f.curry.call(val) : f.call(val))
+        }
+      }
+    end
+
     class Right < Either
       alias value right
 

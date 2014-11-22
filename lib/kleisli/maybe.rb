@@ -16,6 +16,14 @@ module Kleisli
       value == other.value
     end
 
+    def *(other)
+      self >-> f {
+        other >-> val {
+          Maybe.lift(f.arity > 1 ? f.curry.call(val) : f.call(val))
+        }
+      }
+    end
+
     class None < Maybe
       def fmap(&f)
         self
@@ -28,6 +36,11 @@ module Kleisli
       def or(other)
         other
       end
+
+      def to_s
+        "None"
+      end
+      alias inspect to_s
     end
 
     class Some < Maybe
@@ -46,6 +59,11 @@ module Kleisli
       def or(other)
         self
       end
+
+      def to_s
+        "Some(#{@value})"
+      end
+      alias inspect to_s
     end
   end
 end

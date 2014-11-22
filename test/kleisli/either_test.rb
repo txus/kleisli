@@ -46,4 +46,16 @@ class EitherTest < MiniTest::Unit::TestCase
   def test_pointfree
     assert_equal Right(10), Right(5) >> F . fn(&Right) . *(2)
   end
+
+  def test_applicative_functor_right_arity_1
+    assert_equal Right(20), Right(-> x { x * 2 }) * Right(10)
+  end
+
+  def test_applicative_functor_right_arity_2
+    assert_equal Right(20), Right(-> x, y { x * y }) * Right(10) * Right(2)
+  end
+
+  def test_applicative_functor_left
+    assert_equal Left("error"), Right(-> x, y { x * y }) * Left("error") * Right(2)
+  end
 end
