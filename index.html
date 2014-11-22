@@ -11,9 +11,6 @@
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
     <title>Kleisli by txus</title>
-    <!-- start Mixpanel --><script type="text/javascript">(function(f,b){if(!b.__SV){var a,e,i,g;window.mixpanel=b;b._i=[];b.init=function(a,e,d){function f(b,h){var a=h.split(".");2==a.length&&(b=b[a[0]],h=a[1]);b[h]=function(){b.push([h].concat(Array.prototype.slice.call(arguments,0)))}}var c=b;"undefined"!==typeof d?c=b[d]=[]:d="mixpanel";c.people=c.people||[];c.toString=function(b){var a="mixpanel";"mixpanel"!==d&&(a+="."+d);b||(a+=" (stub)");return a};c.people.toString=function(){return c.toString(1)+".people (stub)"};i="disable track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config people.set people.set_once people.increment people.append people.track_charge people.clear_charges people.delete_user".split(" ");
-      for(g=0;g<i.length;g++)f(c,i[g]);b._i.push([a,e,d])};b.__SV=1.2;a=f.createElement("script");a.type="text/javascript";a.async=!0;a.src="//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";e=f.getElementsByTagName("script")[0];e.parentNode.insertBefore(a,e)}})(document,window.mixpanel||[]);
-        mixpanel.init("af522f005afba4a9815d19dc53e50261");</script><!-- end Mixpanel -->
   </head>
 
   <body>
@@ -60,7 +57,10 @@ which for each monad below).</p>
 <p>Kleisli uses a clever Ruby syntax trick to implement the <code>bind</code> operator, which
 looks like this: <code>&gt;-&gt;</code> when used with a block. We will probably burn in hell
 for this. You can also use <code>&gt;</code> or <code>&gt;&gt;</code> if you're going to pass in a proc or
-  lambda object.</p>
+ lambda object.</p>
+
+<p><code>Maybe</code> and <code>Either</code> are applicative functors with the apply operator <code>*</code>. Read
+further to see how it works.</p>
 
 <h3>
 <a id="function-composition" class="anchor" href="#function-composition" aria-hidden="true"><span class="octicon octicon-link"></span></a>Function composition</h3>
@@ -149,6 +149,18 @@ y <span class="pl-k">=</span> <span class="pl-vo">None</span>()
 <span class="pl-c"># =&gt; Some("Monad Street")</span>
 <span class="pl-c"># If the user is nil</span>
 <span class="pl-c"># =&gt; None()</span></pre></div>
+
+<h3>
+<a id="-applicative-functors-apply" class="anchor" href="#-applicative-functors-apply" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+<code>*</code> (applicative functor's apply)</h3>
+
+<div class="highlight highlight-ruby"><pre><span class="pl-k">require</span> <span class="pl-s1"><span class="pl-pds">"</span>kleisli<span class="pl-pds">"</span></span>
+
+add <span class="pl-k">=</span> <span class="pl-k">-</span><span class="pl-k">&gt;</span> x, y { x <span class="pl-k">+</span> y }
+<span class="pl-vo">Some</span>(add) <span class="pl-k">*</span> <span class="pl-vo">Some</span>(<span class="pl-c1">10</span>) <span class="pl-k">*</span> <span class="pl-vo">Some</span>(<span class="pl-c1">2</span>)
+<span class="pl-c"># =&gt; Some(12)</span>
+<span class="pl-vo">Some</span>(add) <span class="pl-k">*</span> <span class="pl-vo">None</span>() <span class="pl-k">*</span> <span class="pl-vo">Some</span>(<span class="pl-c1">2</span>)
+<span class="pl-c"># =&gt; None</span></pre></div>
 
 <h2>
 <a id="try" class="anchor" href="#try" aria-hidden="true"><span class="octicon octicon-link"></span></a>Try</h2>
@@ -269,6 +281,18 @@ result <span class="pl-k">=</span> <span class="pl-k">if</span> foo <span class=
 result <span class="pl-c"># =&gt; Right(20)</span>
 <span class="pl-c"># If it didn't</span>
 result <span class="pl-c"># =&gt; Left("wrong")</span></pre></div>
+
+<h3>
+<a id="-applicative-functors-apply-1" class="anchor" href="#-applicative-functors-apply-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+<code>*</code> (applicative functor's apply)</h3>
+
+<div class="highlight highlight-ruby"><pre><span class="pl-k">require</span> <span class="pl-s1"><span class="pl-pds">"</span>kleisli<span class="pl-pds">"</span></span>
+
+add <span class="pl-k">=</span> <span class="pl-k">-</span><span class="pl-k">&gt;</span> x, y { x <span class="pl-k">+</span> y }
+<span class="pl-vo">Right</span>(add) <span class="pl-k">*</span> <span class="pl-vo">Right</span>(<span class="pl-c1">10</span>) <span class="pl-k">*</span> <span class="pl-vo">Right</span>(<span class="pl-c1">2</span>)
+<span class="pl-c"># =&gt; Some(12)</span>
+<span class="pl-vo">Right</span>(add) <span class="pl-k">*</span> <span class="pl-vo">Left</span>(<span class="pl-s1"><span class="pl-pds">"</span>error<span class="pl-pds">"</span></span>) <span class="pl-k">*</span> <span class="pl-vo">Right</span>(<span class="pl-c1">2</span>)
+<span class="pl-c"># =&gt; Left("error")</span></pre></div>
 
 <h3>
 <a id="or" class="anchor" href="#or" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>or</code>
@@ -395,7 +419,7 @@ Levick</a> under the MIT license. We are <a href="https://twitter.com/txustice">
           This page was generated by <a href="http://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.
         </footer>
 
-
+        
       </div>
     </div>
   </body>
