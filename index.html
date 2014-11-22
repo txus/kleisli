@@ -43,7 +43,7 @@ of concept.</p>
 
 <p>In your Gemfile:</p>
 
-<div class="highlight highlight-ruby"><pre><span class="nb">gem</span> <span class="s1">'kleisli'</span></pre></div>
+<div class="highlight highlight-ruby"><pre><span class="pl-k">gem</span> <span class="pl-s1"><span class="pl-pds">'</span>kleisli<span class="pl-pds">'</span></span></pre></div>
 
 <p>We would like to thank Curry and Howard for their correspondence.</p>
 
@@ -68,31 +68,40 @@ is such a perversion of Ruby syntax that Matz would probably condemn this:</p>
 <p>Think of <code>F</code> as the identity function. Although it's just a hack to make it
 work in Ruby.</p>
 
-<div class="highlight highlight-ruby"><pre><span class="c1"># Reminder that (f . g) x= f(g(x))</span>
-f <span class="o">=</span> <span class="no">F</span> . first . last
-f.call <span class="o">[[</span><span class="m">1</span>,<span class="m">2</span><span class="o">]</span>, <span class="o">[</span><span class="m">3</span>,<span class="m">4</span><span class="o">]]</span>
-<span class="c1"># =&gt; 3</span>
+<div class="highlight highlight-ruby"><pre><span class="pl-c"># Reminder that (f . g) x= f(g(x))</span>
+f <span class="pl-k">=</span> <span class="pl-vo">F</span> . first . last
+f.call [[<span class="pl-c1">1</span>,<span class="pl-c1">2</span>], [<span class="pl-c1">3</span>,<span class="pl-c1">4</span>]]
+<span class="pl-c"># =&gt; 3</span>
 
-f <span class="o">=</span> <span class="no">F</span> . capitalize . reverse
-f.call <span class="s2">"hello"</span>
-<span class="c1"># =&gt; "Olleh"</span></pre></div>
+f <span class="pl-k">=</span> <span class="pl-vo">F</span> . capitalize . reverse
+f.call <span class="pl-s1"><span class="pl-pds">"</span>hello<span class="pl-pds">"</span></span>
+<span class="pl-c"># =&gt; "Olleh"</span></pre></div>
 
 <p>Functions and methods are interchangeable:</p>
 
-<div class="highlight highlight-ruby"><pre><span class="k">def</span> <span class="nf">foo</span>(<span class="nv">s</span>)
-  s.reverse
-<span class="k">end</span>
+<div class="highlight highlight-ruby"><pre>foo <span class="pl-k">=</span> lambda { |<span class="pl-vo">s</span>| s.reverse }
 
-f <span class="o">=</span> <span class="no">F</span> . capitalize . foo
-f.call <span class="s2">"hello"</span>
-<span class="c1"># =&gt; "Olleh"</span></pre></div>
+f <span class="pl-k">=</span> <span class="pl-vo">F</span> . capitalize . fn(<span class="pl-k">&amp;</span>foo)
+f.call <span class="pl-s1"><span class="pl-pds">"</span>hello<span class="pl-pds">"</span></span>
+<span class="pl-c"># =&gt; "Olleh"</span></pre></div>
 
 <p>All functions and methods are partially applicable:</p>
 
 <div class="highlight highlight-ruby"><pre>
-f <span class="o">=</span> <span class="no">F</span> . split(<span class="s2">":"</span>) . strip
-puts f.call <span class="s2">"  localhost:9092     "</span>
-<span class="c1"># =&gt; ["localhost", "9092"]</span></pre></div>
+<span class="pl-c"># Partially applied method:</span>
+f <span class="pl-k">=</span> <span class="pl-vo">F</span> . split(<span class="pl-s1"><span class="pl-pds">"</span>:<span class="pl-pds">"</span></span>) . strip
+f.call <span class="pl-s1"><span class="pl-pds">"</span>  localhost:9092     <span class="pl-pds">"</span></span>
+<span class="pl-c"># =&gt; ["localhost", "9092"]</span>
+
+<span class="pl-c"># Partially applied lambda:</span>
+my_split <span class="pl-k">=</span> lambda { |<span class="pl-vo">str</span>, *<span class="pl-vo">args</span>| str.split(<span class="pl-k">*</span>args) }
+f <span class="pl-k">=</span> <span class="pl-vo">F</span> . fn(<span class="pl-s1"><span class="pl-pds">"</span>:<span class="pl-pds">"</span></span>, <span class="pl-k">&amp;</span>split)
+f.call <span class="pl-s1"><span class="pl-pds">"</span>  localhost:9092     <span class="pl-pds">"</span></span>
+<span class="pl-c"># =&gt; ["localhost", "9092"]</span></pre></div>
+
+<p>Finally, for convenience, <code>F</code> is the identity function:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="pl-s3">F</span>.call(<span class="pl-c1">1</span>) <span class="pl-c"># =&gt; 1</span></pre></div>
 
 <h2>
 <a id="maybe-monad" class="anchor" href="#maybe-monad" aria-hidden="true"><span class="octicon octicon-link"></span></a>Maybe monad</h2>
@@ -104,37 +113,39 @@ return nil at any point. <code>user.address.street</code> anyone?</p>
 <a id="--bind" class="anchor" href="#--bind" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 <code>&gt;-&gt;</code> (bind)</h3>
 
-<div class="highlight highlight-ruby"><pre><span class="nb">require</span> <span class="s2">"kleisli"</span>
+<div class="highlight highlight-ruby"><pre><span class="pl-k">require</span> <span class="pl-s1"><span class="pl-pds">"</span>kleisli<span class="pl-pds">"</span></span>
 
-maybe_user <span class="o">=</span> <span class="no">Maybe</span>(user) <span class="o">&gt;</span><span class="o">-</span><span class="o">&gt;</span> user {
-  <span class="no">Maybe</span>(user.address) } <span class="o">&gt;</span><span class="o">-</span><span class="o">&gt;</span> address {
-    <span class="no">Maybe</span>(address.street) }
+maybe_user <span class="pl-k">=</span> <span class="pl-vo">Maybe</span>(user) <span class="pl-k">&gt;</span><span class="pl-k">-</span><span class="pl-k">&gt;</span> user {
+  <span class="pl-vo">Maybe</span>(user.address) } <span class="pl-k">&gt;</span><span class="pl-k">-</span><span class="pl-k">&gt;</span> address {
+    <span class="pl-vo">Maybe</span>(address.street) }
 
-<span class="c1"># If user exists</span>
-<span class="c1"># =&gt; Some("Monad Street")</span>
-<span class="c1"># If user is nil</span>
-<span class="c1"># =&gt; None()</span>
+<span class="pl-c"># If user exists</span>
+<span class="pl-c"># =&gt; Some("Monad Street")</span>
+<span class="pl-c"># If user is nil</span>
+<span class="pl-c"># =&gt; None()</span>
 
-<span class="c1"># You can also use Some and None as type constructors yourself.</span>
-x <span class="o">=</span> <span class="no">Some</span>(<span class="m">10</span>)
-y <span class="o">=</span> <span class="no">None</span>()
+<span class="pl-c"># You can also use Some and None as type constructors yourself.</span>
+x <span class="pl-k">=</span> <span class="pl-vo">Some</span>(<span class="pl-c1">10</span>)
+y <span class="pl-k">=</span> <span class="pl-vo">None</span>()
+</pre></div>
 
-<span class="c1"># Now using fancy point-free style:</span>
-<span class="no">Maybe</span>(user) <span class="o">&gt;&gt;</span> <span class="no">F</span> . <span class="no">Maybe</span> . address <span class="o">&gt;&gt;</span> <span class="no">F</span> . <span class="no">Maybe</span> . street</pre></div>
+<p>As usual (with Maybe and Either), using point-free style is much cleaner:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="pl-vo">Maybe</span>(user) <span class="pl-k">&gt;&gt;</span> <span class="pl-vo">F</span> . fn(<span class="pl-k">&amp;</span><span class="pl-vo">Maybe</span>) . address <span class="pl-k">&gt;&gt;</span> <span class="pl-vo">F</span> . fn(<span class="pl-k">&amp;</span><span class="pl-vo">Maybe</span>) . street</pre></div>
 
 <h3>
 <a id="fmap" class="anchor" href="#fmap" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>fmap</code>
 </h3>
 
-<div class="highlight highlight-ruby"><pre><span class="nb">require</span> <span class="s2">"kleisli"</span>
+<div class="highlight highlight-ruby"><pre><span class="pl-k">require</span> <span class="pl-s1"><span class="pl-pds">"</span>kleisli<span class="pl-pds">"</span></span>
 
-<span class="c1"># If we know that a user always has an address with a street</span>
-<span class="no">Maybe</span>(user).fmap(<span class="o">&amp;</span><span class="ss">:address</span>).fmap(<span class="o">&amp;</span><span class="ss">:street</span>)
+<span class="pl-c"># If we know that a user always has an address with a street</span>
+<span class="pl-vo">Maybe</span>(user).fmap(<span class="pl-k">&amp;</span><span class="pl-c1">:address</span>).fmap(<span class="pl-k">&amp;</span><span class="pl-c1">:street</span>)
 
-<span class="c1"># If the user exists</span>
-<span class="c1"># =&gt; Some("Monad Street")</span>
-<span class="c1"># If the user is nil</span>
-<span class="c1"># =&gt; None()</span></pre></div>
+<span class="pl-c"># If the user exists</span>
+<span class="pl-c"># =&gt; Some("Monad Street")</span>
+<span class="pl-c"># If the user is nil</span>
+<span class="pl-c"># =&gt; None()</span></pre></div>
 
 <h2>
 <a id="try" class="anchor" href="#try" aria-hidden="true"><span class="octicon octicon-link"></span></a>Try</h2>
@@ -146,36 +157,36 @@ an exception at any point.</p>
 <a id="--bind-1" class="anchor" href="#--bind-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 <code>&gt;-&gt;</code> (bind)</h3>
 
-<div class="highlight highlight-ruby"><pre><span class="nb">require</span> <span class="s2">"kleisli"</span>
+<div class="highlight highlight-ruby"><pre><span class="pl-k">require</span> <span class="pl-s1"><span class="pl-pds">"</span>kleisli<span class="pl-pds">"</span></span>
 
-json_string <span class="o">=</span> get_json_from_somewhere
+json_string <span class="pl-k">=</span> get_json_from_somewhere
 
-result <span class="o">=</span> <span class="no">Try</span> { <span class="no">JSON</span>.parse(json_string) } <span class="o">&gt;</span><span class="o">-</span><span class="o">&gt;</span> json {
-  <span class="no">Try</span> { json<span class="o">[</span><span class="s2">"dividend"</span><span class="o">]</span>.to_i <span class="o">/</span> json<span class="o">[</span><span class="s2">"divisor"</span><span class="o">]</span>.to_i }
+result <span class="pl-k">=</span> <span class="pl-vo">Try</span> { <span class="pl-s3">JSON</span>.parse(json_string) } <span class="pl-k">&gt;</span><span class="pl-k">-</span><span class="pl-k">&gt;</span> json {
+  <span class="pl-vo">Try</span> { json[<span class="pl-s1"><span class="pl-pds">"</span>dividend<span class="pl-pds">"</span></span>].to_i <span class="pl-k">/</span> json[<span class="pl-s1"><span class="pl-pds">"</span>divisor<span class="pl-pds">"</span></span>].to_i }
 }
 
-<span class="c1"># If no exception was thrown:</span>
+<span class="pl-c"># If no exception was thrown:</span>
 
-result       <span class="c1"># =&gt; #&lt;Try::Success @value=123&gt;</span>
-result.value <span class="c1"># =&gt; 123</span>
+result       <span class="pl-c"># =&gt; #&lt;Try::Success @value=123&gt;</span>
+result.value <span class="pl-c"># =&gt; 123</span>
 
-<span class="c1"># If there was a ZeroDivisionError exception for example:</span>
+<span class="pl-c"># If there was a ZeroDivisionError exception for example:</span>
 
-result           <span class="c1"># =&gt; #&lt;Try::Failure @exception=#&lt;ZeroDivisionError ...&gt;&gt;</span>
-result.exception <span class="c1"># =&gt; #&lt;ZeroDivisionError ...&gt;</span></pre></div>
+result           <span class="pl-c"># =&gt; #&lt;Try::Failure @exception=#&lt;ZeroDivisionError ...&gt;&gt;</span>
+result.exception <span class="pl-c"># =&gt; #&lt;ZeroDivisionError ...&gt;</span></pre></div>
 
 <h3>
 <a id="fmap-1" class="anchor" href="#fmap-1" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>fmap</code>
 </h3>
 
-<div class="highlight highlight-ruby"><pre><span class="nb">require</span> <span class="s2">"kleisli"</span>
+<div class="highlight highlight-ruby"><pre><span class="pl-k">require</span> <span class="pl-s1"><span class="pl-pds">"</span>kleisli<span class="pl-pds">"</span></span>
 
-<span class="no">Try</span> { <span class="no">JSON</span>.parse(json_string) }.fmap(<span class="o">&amp;</span><span class="ss">:symbolize_keys</span>).value
+<span class="pl-vo">Try</span> { <span class="pl-s3">JSON</span>.parse(json_string) }.fmap(<span class="pl-k">&amp;</span><span class="pl-c1">:symbolize_keys</span>).value
 
-<span class="c1"># If everything went well:</span>
-<span class="c1"># =&gt; { :my =&gt; "json", :with =&gt; "symbolized keys" }</span>
-<span class="c1"># If an exception was thrown:</span>
-<span class="c1"># =&gt; nil</span></pre></div>
+<span class="pl-c"># If everything went well:</span>
+<span class="pl-c"># =&gt; { :my =&gt; "json", :with =&gt; "symbolized keys" }</span>
+<span class="pl-c"># If an exception was thrown:</span>
+<span class="pl-c"># =&gt; nil</span></pre></div>
 
 <h3>
 <a id="to_maybe" class="anchor" href="#to_maybe" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>to_maybe</code>
@@ -184,14 +195,14 @@ result.exception <span class="c1"># =&gt; #&lt;ZeroDivisionError ...&gt;</span><
 <p>Sometimes it's useful to interleave both <code>Try</code> and <code>Maybe</code>. To convert a <code>Try</code>
 into a <code>Maybe</code> you can use <code>to_maybe</code>:</p>
 
-<div class="highlight highlight-ruby"><pre><span class="nb">require</span> <span class="s2">"kleisli"</span>
+<div class="highlight highlight-ruby"><pre><span class="pl-k">require</span> <span class="pl-s1"><span class="pl-pds">"</span>kleisli<span class="pl-pds">"</span></span>
 
-<span class="no">Try</span> { <span class="no">JSON</span>.parse(json_string) }.fmap(<span class="o">&amp;</span><span class="ss">:symbolize_keys</span>).to_maybe
+<span class="pl-vo">Try</span> { <span class="pl-s3">JSON</span>.parse(json_string) }.fmap(<span class="pl-k">&amp;</span><span class="pl-c1">:symbolize_keys</span>).to_maybe
 
-<span class="c1"># If everything went well:</span>
-<span class="c1"># =&gt; Some({ :my =&gt; "json", :with =&gt; "symbolized keys" })</span>
-<span class="c1"># If an exception was thrown:</span>
-<span class="c1"># =&gt; None()</span></pre></div>
+<span class="pl-c"># If everything went well:</span>
+<span class="pl-c"># =&gt; Some({ :my =&gt; "json", :with =&gt; "symbolized keys" })</span>
+<span class="pl-c"># If an exception was thrown:</span>
+<span class="pl-c"># =&gt; None()</span></pre></div>
 
 <h2>
 <a id="either" class="anchor" href="#either" aria-hidden="true"><span class="octicon octicon-link"></span></a>Either</h2>
@@ -206,50 +217,67 @@ into a <code>Maybe</code> you can use <code>to_maybe</code>:</p>
 <a id="--bind-2" class="anchor" href="#--bind-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 <code>&gt;-&gt;</code> (bind)</h3>
 
-<div class="highlight highlight-ruby"><pre><span class="nb">require</span> <span class="s2">"kleisli"</span>
+<div class="highlight highlight-ruby"><pre><span class="pl-k">require</span> <span class="pl-s1"><span class="pl-pds">"</span>kleisli<span class="pl-pds">"</span></span>
 
-result <span class="o">=</span> <span class="no">Right</span>(<span class="m">3</span>) <span class="o">&gt;</span><span class="o">-</span><span class="o">&gt;</span> value {
-  <span class="k">if</span> value <span class="o">&gt;</span> <span class="m">1</span>
-    <span class="no">Right</span>(value <span class="o">+</span> <span class="m">3</span>)
-  <span class="k">else</span>
-    <span class="no">Left</span>(<span class="s2">"value was less or equal than 1"</span>)
-  <span class="k">end</span>
-} <span class="o">&gt;</span><span class="o">-</span><span class="o">&gt;</span> value {
-  <span class="k">if</span> value <span class="o">%</span> <span class="m">2</span> <span class="o">==</span> <span class="m">0</span>
-    <span class="no">Right</span>(value <span class="o">*</span> <span class="m">2</span>)
-  <span class="k">else</span>
-    <span class="no">Left</span>(<span class="s2">"value was not even"</span>)
-  <span class="k">end</span>
+result <span class="pl-k">=</span> <span class="pl-vo">Right</span>(<span class="pl-c1">3</span>) <span class="pl-k">&gt;</span><span class="pl-k">-</span><span class="pl-k">&gt;</span> value {
+  <span class="pl-k">if</span> value <span class="pl-k">&gt;</span> <span class="pl-c1">1</span>
+    <span class="pl-vo">Right</span>(value <span class="pl-k">+</span> <span class="pl-c1">3</span>)
+  <span class="pl-k">else</span>
+    <span class="pl-vo">Left</span>(<span class="pl-s1"><span class="pl-pds">"</span>value was less or equal than 1<span class="pl-pds">"</span></span>)
+  <span class="pl-k">end</span>
+} <span class="pl-k">&gt;</span><span class="pl-k">-</span><span class="pl-k">&gt;</span> value {
+  <span class="pl-k">if</span> value <span class="pl-k">%</span> <span class="pl-c1">2</span> <span class="pl-k">==</span> <span class="pl-c1">0</span>
+    <span class="pl-vo">Right</span>(value <span class="pl-k">*</span> <span class="pl-c1">2</span>)
+  <span class="pl-k">else</span>
+    <span class="pl-vo">Left</span>(<span class="pl-s1"><span class="pl-pds">"</span>value was not even<span class="pl-pds">"</span></span>)
+  <span class="pl-k">end</span>
 }
 
-<span class="c1"># If everything went well</span>
-result <span class="c1"># =&gt; Right(12)</span>
-result.value <span class="c1"># =&gt; 12</span>
+<span class="pl-c"># If everything went well</span>
+result <span class="pl-c"># =&gt; Right(12)</span>
+result.value <span class="pl-c"># =&gt; 12</span>
 
-<span class="c1"># If it failed in the first block</span>
-result <span class="c1"># =&gt; Left("value was less or equal than 1")</span>
-result.value <span class="c1"># =&gt; "value was less or equal than 1"</span>
+<span class="pl-c"># If it failed in the first block</span>
+result <span class="pl-c"># =&gt; Left("value was less or equal than 1")</span>
+result.value <span class="pl-c"># =&gt; "value was less or equal than 1"</span>
 
-<span class="c1"># If it failed in the second block</span>
-result <span class="c1"># =&gt; Left("value was not even")</span>
-result.value <span class="c1"># =&gt; "value was not even"</span></pre></div>
+<span class="pl-c"># If it failed in the second block</span>
+result <span class="pl-c"># =&gt; Left("value was not even")</span>
+result.value <span class="pl-c"># =&gt; "value was not even"</span>
+
+<span class="pl-c"># Point-free style bind!</span>
+result <span class="pl-k">=</span> <span class="pl-vo">Right</span>(<span class="pl-c1">3</span>) <span class="pl-k">&gt;&gt;</span> <span class="pl-vo">F</span> . fn(<span class="pl-k">&amp;</span><span class="pl-vo">Right</span>) . <span class="pl-k">*</span>(<span class="pl-c1">2</span>)
+result <span class="pl-c"># =&gt; Right(6)</span>
+result.value <span class="pl-c"># =&gt; 6</span></pre></div>
 
 <h3>
 <a id="fmap-2" class="anchor" href="#fmap-2" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>fmap</code>
 </h3>
 
-<div class="highlight highlight-ruby"><pre><span class="nb">require</span> <span class="s2">"kleisli"</span>
+<div class="highlight highlight-ruby"><pre><span class="pl-k">require</span> <span class="pl-s1"><span class="pl-pds">"</span>kleisli<span class="pl-pds">"</span></span>
 
-result <span class="o">=</span> <span class="k">if</span> foo <span class="o">&gt;</span> bar
-  <span class="no">Right</span>(<span class="m">10</span>)
-<span class="k">else</span>
-  <span class="no">Left</span>(<span class="s2">"wrong"</span>)
-<span class="k">end</span>.fmap { <span class="o">|</span><span class="nv">x</span><span class="o">|</span> x <span class="o">*</span> <span class="m">2</span> }
+result <span class="pl-k">=</span> <span class="pl-k">if</span> foo <span class="pl-k">&gt;</span> bar
+  <span class="pl-vo">Right</span>(<span class="pl-c1">10</span>)
+<span class="pl-k">else</span>
+  <span class="pl-vo">Left</span>(<span class="pl-s1"><span class="pl-pds">"</span>wrong<span class="pl-pds">"</span></span>)
+<span class="pl-k">end</span>.fmap { |<span class="pl-vo">x</span>| x <span class="pl-k">*</span> <span class="pl-c1">2</span> }
 
-<span class="c1"># If everything went well</span>
-result <span class="c1"># =&gt; Right(20)</span>
-<span class="c1"># If it didn't</span>
-result <span class="c1"># =&gt; Left("wrong")</span></pre></div>
+<span class="pl-c"># If everything went well</span>
+result <span class="pl-c"># =&gt; Right(20)</span>
+<span class="pl-c"># If it didn't</span>
+result <span class="pl-c"># =&gt; Left("wrong")</span></pre></div>
+
+<h3>
+<a id="or" class="anchor" href="#or" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>or</code>
+</h3>
+
+<p><code>or</code> does pretty much what would you expect:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="pl-k">require</span> <span class="pl-s1"><span class="pl-pds">'</span>kleisli<span class="pl-pds">'</span></span>
+
+<span class="pl-vo">Right</span>(<span class="pl-c1">10</span>).<span class="pl-k">or</span>(<span class="pl-vo">Right</span>(<span class="pl-c1">999</span>)) <span class="pl-c"># =&gt; Right(10)</span>
+<span class="pl-vo">Left</span>(<span class="pl-s1"><span class="pl-pds">"</span>error<span class="pl-pds">"</span></span>).<span class="pl-k">or</span>(<span class="pl-vo">Left</span>(<span class="pl-s1"><span class="pl-pds">"</span>new error<span class="pl-pds">"</span></span>)) <span class="pl-c"># =&gt; Left("new error")</span>
+<span class="pl-vo">Left</span>(<span class="pl-s1"><span class="pl-pds">"</span>error<span class="pl-pds">"</span></span>).<span class="pl-k">or</span> { |<span class="pl-vo">err</span>| <span class="pl-vo">Left</span>(<span class="pl-s1"><span class="pl-pds">"</span>new <span class="pl-pse">#{</span><span class="pl-s2">err</span><span class="pl-pse"><span class="pl-s2">}</span></span><span class="pl-pds">"</span></span>) } <span class="pl-c"># =&gt; Left("new error")</span></pre></div>
 
 <h3>
 <a id="to_maybe-1" class="anchor" href="#to_maybe-1" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>to_maybe</code>
@@ -258,18 +286,18 @@ result <span class="c1"># =&gt; Left("wrong")</span></pre></div>
 <p>Sometimes it's useful to turn an <code>Either</code> into a <code>Maybe</code>. You can use
 <code>to_maybe</code> for that:</p>
 
-<div class="highlight highlight-ruby"><pre><span class="nb">require</span> <span class="s2">"kleisli"</span>
+<div class="highlight highlight-ruby"><pre><span class="pl-k">require</span> <span class="pl-s1"><span class="pl-pds">"</span>kleisli<span class="pl-pds">"</span></span>
 
-result <span class="o">=</span> <span class="k">if</span> foo <span class="o">&gt;</span> bar
-  <span class="no">Right</span>(<span class="m">10</span>)
-<span class="k">else</span>
-  <span class="no">Left</span>(<span class="s2">"wrong"</span>)
-<span class="k">end</span>.to_maybe
+result <span class="pl-k">=</span> <span class="pl-k">if</span> foo <span class="pl-k">&gt;</span> bar
+  <span class="pl-vo">Right</span>(<span class="pl-c1">10</span>)
+<span class="pl-k">else</span>
+  <span class="pl-vo">Left</span>(<span class="pl-s1"><span class="pl-pds">"</span>wrong<span class="pl-pds">"</span></span>)
+<span class="pl-k">end</span>.to_maybe
 
-<span class="c1"># If everything went well:</span>
-result <span class="c1"># =&gt; Some(10)</span>
-<span class="c1"># If it didn't</span>
-result <span class="c1"># =&gt; None()</span></pre></div>
+<span class="pl-c"># If everything went well:</span>
+result <span class="pl-c"># =&gt; Some(10)</span>
+<span class="pl-c"># If it didn't</span>
+result <span class="pl-c"># =&gt; None()</span></pre></div>
 
 <h2>
 <a id="writer" class="anchor" href="#writer" aria-hidden="true"><span class="octicon octicon-link"></span></a>Writer</h2>
@@ -290,27 +318,27 @@ example a list of strings.</p>
 <a id="--bind-3" class="anchor" href="#--bind-3" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 <code>&gt;-&gt;</code> (bind)</h3>
 
-<div class="highlight highlight-ruby"><pre><span class="nb">require</span> <span class="s2">"kleisli"</span>
+<div class="highlight highlight-ruby"><pre><span class="pl-k">require</span> <span class="pl-s1"><span class="pl-pds">"</span>kleisli<span class="pl-pds">"</span></span>
 
-writer <span class="o">=</span> <span class="no">Writer</span>(<span class="o">[</span><span class="o">]</span>, <span class="m">100</span>) <span class="o">&gt;</span><span class="o">-</span><span class="o">&gt;</span> value {
-  <span class="no">Writer</span>(<span class="o">[</span><span class="s2">"added 100"</span><span class="o">]</span>, value <span class="o">+</span> <span class="m">100</span>)
-} <span class="o">&gt;</span><span class="o">-</span><span class="o">&gt;</span> value {
-  <span class="no">Writer</span>(<span class="o">[</span><span class="s2">"added 140 more"</span><span class="o">]</span>, value <span class="o">+</span> <span class="m">140</span>)
-} <span class="c1"># =&gt; Writer(["added 100", "added 140 more"], 340)</span>
+writer <span class="pl-k">=</span> <span class="pl-vo">Writer</span>([], <span class="pl-c1">100</span>) <span class="pl-k">&gt;</span><span class="pl-k">-</span><span class="pl-k">&gt;</span> value {
+  <span class="pl-vo">Writer</span>([<span class="pl-s1"><span class="pl-pds">"</span>added 100<span class="pl-pds">"</span></span>], value <span class="pl-k">+</span> <span class="pl-c1">100</span>)
+} <span class="pl-k">&gt;</span><span class="pl-k">-</span><span class="pl-k">&gt;</span> value {
+  <span class="pl-vo">Writer</span>([<span class="pl-s1"><span class="pl-pds">"</span>added 140 more<span class="pl-pds">"</span></span>], value <span class="pl-k">+</span> <span class="pl-c1">140</span>)
+} <span class="pl-c"># =&gt; Writer(["added 100", "added 140 more"], 340)</span>
 
-log, value <span class="o">=</span> writer.unwrap
-log <span class="c1"># =&gt; ["added 100", "added 140 more"]</span>
-value <span class="c1"># =&gt; 340</span></pre></div>
+log, value <span class="pl-k">=</span> writer.unwrap
+log <span class="pl-c"># =&gt; ["added 100", "added 140 more"]</span>
+value <span class="pl-c"># =&gt; 340</span></pre></div>
 
 <h3>
 <a id="fmap-3" class="anchor" href="#fmap-3" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>fmap</code>
 </h3>
 
-<div class="highlight highlight-ruby"><pre><span class="nb">require</span> <span class="s2">"kleisli"</span>
+<div class="highlight highlight-ruby"><pre><span class="pl-k">require</span> <span class="pl-s1"><span class="pl-pds">"</span>kleisli<span class="pl-pds">"</span></span>
 
-writer <span class="o">=</span> <span class="no">Writer</span>(<span class="o">[</span><span class="o">]</span>, <span class="m">100</span>).fmap { <span class="o">|</span><span class="nv">value</span><span class="o">|</span>
-  value <span class="o">+</span> <span class="m">100</span>
-} <span class="c1"># =&gt; Writer([], 200)</span></pre></div>
+writer <span class="pl-k">=</span> <span class="pl-vo">Writer</span>([], <span class="pl-c1">100</span>).fmap { |<span class="pl-vo">value</span>|
+  value <span class="pl-k">+</span> <span class="pl-c1">100</span>
+} <span class="pl-c"># =&gt; Writer([], 200)</span></pre></div>
 
 <h2>
 <a id="future" class="anchor" href="#future" aria-hidden="true"><span class="octicon octicon-link"></span></a>Future</h2>
@@ -324,32 +352,32 @@ lambdas, so you need to call <code>.call</code> on them. See the examples below.
 <a id="--bind-4" class="anchor" href="#--bind-4" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 <code>&gt;-&gt;</code> (bind)</h3>
 
-<div class="highlight highlight-ruby"><pre><span class="nb">require</span> <span class="s2">"kleisli"</span>
+<div class="highlight highlight-ruby"><pre><span class="pl-k">require</span> <span class="pl-s1"><span class="pl-pds">"</span>kleisli<span class="pl-pds">"</span></span>
 
-f <span class="o">=</span> <span class="no">Future</span>(<span class="s2">"myendpoint.com"</span>) <span class="o">&gt;</span><span class="o">-</span><span class="o">&gt;</span> url {
-  <span class="no">Future</span> { <span class="no">HTTP</span>.get(url.call) }
-} <span class="o">&gt;</span><span class="o">-</span><span class="o">&gt;</span> response {
-  <span class="no">Future</span> {
-    other_url <span class="o">=</span> <span class="no">JSON</span>.parse(response.call.body)<span class="o">[</span><span class="ss">:other_url</span><span class="o">]</span>
-    <span class="no">HTTP</span>.get(other_url)
+f <span class="pl-k">=</span> <span class="pl-vo">Future</span>(<span class="pl-s1"><span class="pl-pds">"</span>myendpoint.com<span class="pl-pds">"</span></span>) <span class="pl-k">&gt;</span><span class="pl-k">-</span><span class="pl-k">&gt;</span> url {
+  <span class="pl-vo">Future</span> { <span class="pl-s3">HTTP</span>.get(url.call) }
+} <span class="pl-k">&gt;</span><span class="pl-k">-</span><span class="pl-k">&gt;</span> response {
+  <span class="pl-vo">Future</span> {
+    other_url <span class="pl-k">=</span> <span class="pl-s3">JSON</span>.parse(response.call.body)[<span class="pl-c1">:other_url</span>]
+    <span class="pl-s3">HTTP</span>.get(other_url)
   }
-} <span class="o">&gt;</span><span class="o">-</span><span class="o">&gt;</span> other_response {
-  <span class="no">Future</span> { <span class="no">JSON</span>.parse(other_response.call.body) }
+} <span class="pl-k">&gt;</span><span class="pl-k">-</span><span class="pl-k">&gt;</span> other_response {
+  <span class="pl-vo">Future</span> { <span class="pl-s3">JSON</span>.parse(other_response.call.body) }
 }
 
-<span class="c1"># Do some other stuff...</span>
+<span class="pl-c"># Do some other stuff...</span>
 
-f.await <span class="c1"># =&gt; block until the whole pipeline is realized</span>
-<span class="c1"># =&gt; { "my" =&gt; "response body" }</span></pre></div>
+f.await <span class="pl-c"># =&gt; block until the whole pipeline is realized</span>
+<span class="pl-c"># =&gt; { "my" =&gt; "response body" }</span></pre></div>
 
 <h3>
 <a id="fmap-4" class="anchor" href="#fmap-4" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>fmap</code>
 </h3>
 
-<div class="highlight highlight-ruby"><pre><span class="nb">require</span> <span class="s2">"kleisli"</span>
+<div class="highlight highlight-ruby"><pre><span class="pl-k">require</span> <span class="pl-s1"><span class="pl-pds">"</span>kleisli<span class="pl-pds">"</span></span>
 
-<span class="no">Future</span> { expensive_operation }.fmap { <span class="o">|</span><span class="nv">x</span><span class="o">|</span> x <span class="o">*</span> <span class="m">2</span> }.await
-<span class="c1"># =&gt; result of expensive_operation * 2</span></pre></div>
+<span class="pl-vo">Future</span> { expensive_operation }.fmap { |<span class="pl-vo">x</span>| x <span class="pl-k">*</span> <span class="pl-c1">2</span> }.await
+<span class="pl-c"># =&gt; result of expensive_operation * 2</span></pre></div>
 
 <h2>
 <a id="whos-this" class="anchor" href="#whos-this" aria-hidden="true"><span class="octicon octicon-link"></span></a>Who's this</h2>
@@ -364,17 +392,7 @@ Levick</a> under the MIT license. We are <a href="https://twitter.com/txustice">
           This page was generated by <a href="http://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.
         </footer>
 
-                  <script type="text/javascript">
-            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-          </script>
-          <script type="text/javascript">
-            try {
-              var pageTracker = _gat._getTracker("UA-19362711-1");
-            pageTracker._trackPageview();
-            } catch(err) {}
-          </script>
-
+        
       </div>
     </div>
   </body>
