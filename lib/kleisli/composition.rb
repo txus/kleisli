@@ -18,19 +18,26 @@ module Kleisli
       @fns = fns
     end
 
-    def method_missing(m, *args, &block)
-      fn = -> a, x {
-        if x.respond_to?(m)
-          x.send(m, *a)
-        else
-          send(m, *[x, a])
-        end
+    def fn(*args, &block)
+      f = -> arguments, receiver {
+        block.call(receiver, *arguments)
       }.curry[args]
-      ComposedFn.new(@fns + [fn])
+      ComposedFn.new(@fns + [f])
+    end
+
+    def method_missing(meth, *args, &block)
+      f = -> arguments, receiver {
+        receiver.send(meth, *arguments, &block)
+      }.curry[args]
+      ComposedFn.new(@fns + [f])
     end
 
     def call(*args)
-      @fns.reduce(:*).call(*args)
+      if @fns.any?
+        @fns.reduce(:*).call(*args)
+      else
+        args.first
+      end
     end
 
     def to_ary

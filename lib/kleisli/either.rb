@@ -28,7 +28,7 @@ module Kleisli
         Maybe::Some.new(@right)
       end
 
-      def or(other)
+      def or(other, &other_blk)
         self
       end
     end
@@ -52,12 +52,19 @@ module Kleisli
         Maybe::None.new
       end
 
-      def or(other)
-        other
+      def or(other, &other_blk)
+        if other_blk
+          other_blk.call(@left)
+        else
+          other
+        end
       end
     end
   end
 end
+
+Right = Kleisli::Either::Right.method(:new)
+Left = Kleisli::Either::Left.method(:new)
 
 def Right(v)
   Kleisli::Either::Right.new(v)

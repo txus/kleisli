@@ -42,4 +42,8 @@ class EitherTest < MiniTest::Unit::TestCase
   def test_to_maybe_left
     assert_equal None(), Left("error").fmap { |x| x * 2 }.to_maybe
   end
+
+  def test_pointfree
+    assert_equal Right(10), Right(5) >> F . fn(&Right) . *(2)
+  end
 end

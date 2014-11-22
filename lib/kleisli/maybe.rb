@@ -50,8 +50,10 @@ module Kleisli
   end
 end
 
+Maybe = Kleisli::Maybe.method(:lift)
+
 def Maybe(v)
-  Kleisli::Maybe.lift(v)
+  Maybe.(v)
 end
 
 def None()

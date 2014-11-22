@@ -47,11 +47,9 @@ f.call "hello"
 Functions and methods are interchangeable:
 
 ```ruby
-def foo(s)
-  s.reverse
-end
+foo = lambda { |s| s.reverse }
 
-f = F . capitalize . foo
+f = F . capitalize . fn(&foo)
 f.call "hello"
 # => "Olleh"
 ```
@@ -60,9 +58,22 @@ All functions and methods are partially applicable:
 
 ```ruby
 
+# Partially applied method:
 f = F . split(":") . strip
-puts f.call "  localhost:9092     "
+f.call "  localhost:9092     "
 # => ["localhost", "9092"]
+
+# Partially applied lambda:
+my_split = lambda { |str, *args| str.split(*args) }
+f = F . fn(":", &split)
+f.call "  localhost:9092     "
+# => ["localhost", "9092"]
+```
+
+Finally, for convenience, `F` is the identity function:
+
+```ruby
+F.call(1) # => 1
 ```
 
 ## Maybe monad
@@ -88,14 +99,12 @@ maybe_user = Maybe(user) >-> user {
 x = Some(10)
 y = None()
 
-# Now using fancy point-free style:
-Maybe(user) >> F . Maybe . address >> F . Maybe . street
 ```
 
-As always, using point-free style is much cleaner:
+As usual (with Maybe and Either), using point-free style is much cleaner:
 
 ```ruby
-Maybe(user) >> F . Maybe . address >> F . Maybe . street
+Maybe(user) >> F . fn(&Maybe) . address >> F . fn(&Maybe) . street
 ```
 
 ### `fmap`
@@ -206,6 +215,11 @@ result.value # => "value was less or equal than 1"
 # If it failed in the second block
 result # => Left("value was not even")
 result.value # => "value was not even"
+
+# Point-free style bind!
+result = Right(3) >> F . fn(&Right) . *(2)
+result # => Right(6)
+result.value # => 6
 ```
 
 ### `fmap`
@@ -223,6 +237,18 @@ end.fmap { |x| x * 2 }
 result # => Right(20)
 # If it didn't
 result # => Left("wrong")
+```
+
+### `or`
+
+`or` does pretty much what would you expect:
+
+```ruby
+require 'kleisli'
+
+Right(10).or(Right(999)) # => Right(10)
+Left("error").or(Left("new error")) # => Left("new error")
+Left("error").or { |err| Left("new #{err}") } # => Left("new error")
 ```
 
 ### `to_maybe`
