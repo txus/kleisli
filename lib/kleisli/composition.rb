@@ -12,8 +12,6 @@ end
 
 module Kleisli
   class ComposedFn < Blank
-    include ::Kernel
-
     def initialize(fns=[])
       @fns = fns
     end
