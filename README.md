@@ -68,7 +68,7 @@ f.call "  localhost:9092     "
 
 # Partially applied lambda:
 my_split = lambda { |str, *args| str.split(*args) }
-f = F . fn(":", &split)
+f = F . fn(":", &my_split) . strip
 f.call "  localhost:9092     "
 # => ["localhost", "9092"]
 ```
