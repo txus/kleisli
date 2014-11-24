@@ -1,2 +1,2 @@
 require 'kleisli'
-require 'test/unit'
+require 'minitest/autorun'
