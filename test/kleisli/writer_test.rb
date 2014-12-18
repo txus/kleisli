@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class WriterTest < MiniTest::Unit::TestCase
+class WriterTest < Minitest::Test
   def test_unwrap
     log, value = Writer("log", 100).unwrap
     assert_equal "log", log

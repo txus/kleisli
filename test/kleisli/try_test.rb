@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class TryTest < MiniTest::Unit::TestCase
+class TryTest < Minitest::Test
   def test_success
     assert_equal 2, Try { 10 / 5 }.value
   end
