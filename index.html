@@ -1,37 +1,37 @@
 <!DOCTYPE html>
 <html>
-
   <head>
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="description" content="Kleisli : Usable, idiomatic common monads in Ruby">
-
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-
-    <title>Kleisli</title>
+    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <title>Kleisli by txus</title>
   </head>
 
   <body>
+    <div id="container">
+      <div class="inner">
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/txus/kleisli">View on GitHub</a>
-
-          <h1 id="project_title">Kleisli</h1>
-          <h2 id="project_tagline">Usable, idiomatic common monads in Ruby</h2>
-
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/txus/kleisli/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/txus/kleisli/tarball/master">Download this project as a tar.gz file</a>
-            </section>
+        <header>
+          <h1>Kleisli</h1>
+          <h2>Usable, idiomatic common monads in Ruby</h2>
         </header>
-    </div>
 
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <p><a href="http://travis-ci.org/txus/adts"><img src="https://secure.travis-ci.org/txus/adts.png" alt="Build Status"></a></p>
+        <section id="downloads" class="clearfix">
+          <a href="https://github.com/txus/kleisli/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
+          <a href="https://github.com/txus/kleisli/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
+          <a href="https://github.com/txus/kleisli" id="view-on-github" class="button"><span>View on GitHub</span></a>
+        </section>
+
+        <hr>
+
+        <section id="main_content">
+          <p><a href="http://travis-ci.org/txus/kleisli"><img src="https://secure.travis-ci.org/txus/kleisli.png" alt="Build Status"></a></p>
 
 <p>An idiomatic, clean implementation of a few common useful monads in Ruby,
 written by <a href="https://github.com/rylev">Ryan Levick</a> and me.</p>
@@ -96,7 +96,7 @@ f.call <span class="pl-s1"><span class="pl-pds">"</span>  localhost:9092     <sp
 
 <span class="pl-c"># Partially applied lambda:</span>
 my_split <span class="pl-k">=</span> lambda { |<span class="pl-vo">str</span>, *<span class="pl-vo">args</span>| str.split(<span class="pl-k">*</span>args) }
-f <span class="pl-k">=</span> <span class="pl-vo">F</span> . fn(<span class="pl-s1"><span class="pl-pds">"</span>:<span class="pl-pds">"</span></span>, <span class="pl-k">&amp;</span>split)
+f <span class="pl-k">=</span> <span class="pl-vo">F</span> . fn(<span class="pl-s1"><span class="pl-pds">"</span>:<span class="pl-pds">"</span></span>, <span class="pl-k">&amp;</span>my_split) . strip
 f.call <span class="pl-s1"><span class="pl-pds">"</span>  localhost:9092     <span class="pl-pds">"</span></span>
 <span class="pl-c"># =&gt; ["localhost", "9092"]</span></pre></div>
 
@@ -288,7 +288,7 @@ result <span class="pl-c"># =&gt; Left("wrong")</span></pre></div>
 
 add <span class="pl-k">=</span> <span class="pl-k">-</span><span class="pl-k">&gt;</span> x, y { x <span class="pl-k">+</span> y }
 <span class="pl-vo">Right</span>(add) <span class="pl-k">*</span> <span class="pl-vo">Right</span>(<span class="pl-c1">10</span>) <span class="pl-k">*</span> <span class="pl-vo">Right</span>(<span class="pl-c1">2</span>)
-<span class="pl-c"># =&gt; Some(12)</span>
+<span class="pl-c"># =&gt; Right(12)</span>
 <span class="pl-vo">Right</span>(add) <span class="pl-k">*</span> <span class="pl-vo">Left</span>(<span class="pl-s1"><span class="pl-pds">"</span>error<span class="pl-pds">"</span></span>) <span class="pl-k">*</span> <span class="pl-vo">Right</span>(<span class="pl-c1">2</span>)
 <span class="pl-c"># =&gt; Left("error")</span></pre></div>
 
@@ -325,47 +325,6 @@ result <span class="pl-c"># =&gt; Some(10)</span>
 result <span class="pl-c"># =&gt; None()</span></pre></div>
 
 <h2>
-<a id="writer" class="anchor" href="#writer" aria-hidden="true"><span class="octicon octicon-link"></span></a>Writer</h2>
-
-<p>The Writer monad is arguably the least useful monad in Ruby (as side effects
-are uncontrolled), but let's take a look at it anyway.</p>
-
-<p>It is used to model computations that <em>append</em> to some kind of state (which
-needs to be a Monoid, expressed in the <code>Kleisli::Monoid</code> mixin) at each step.</p>
-
-<p>(We've already implemented the Monoid interface for <code>String</code>, <code>Array</code>, <code>Hash</code>,
-<code>Fixnum</code> and <code>Float</code> for you.)</p>
-
-<p>An example would be a pipeline of computations that append to a log, for
-example a list of strings.</p>
-
-<h3>
-<a id="--bind-3" class="anchor" href="#--bind-3" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-<code>&gt;-&gt;</code> (bind)</h3>
-
-<div class="highlight highlight-ruby"><pre><span class="pl-k">require</span> <span class="pl-s1"><span class="pl-pds">"</span>kleisli<span class="pl-pds">"</span></span>
-
-writer <span class="pl-k">=</span> <span class="pl-vo">Writer</span>([], <span class="pl-c1">100</span>) <span class="pl-k">&gt;</span><span class="pl-k">-</span><span class="pl-k">&gt;</span> value {
-  <span class="pl-vo">Writer</span>([<span class="pl-s1"><span class="pl-pds">"</span>added 100<span class="pl-pds">"</span></span>], value <span class="pl-k">+</span> <span class="pl-c1">100</span>)
-} <span class="pl-k">&gt;</span><span class="pl-k">-</span><span class="pl-k">&gt;</span> value {
-  <span class="pl-vo">Writer</span>([<span class="pl-s1"><span class="pl-pds">"</span>added 140 more<span class="pl-pds">"</span></span>], value <span class="pl-k">+</span> <span class="pl-c1">140</span>)
-} <span class="pl-c"># =&gt; Writer(["added 100", "added 140 more"], 340)</span>
-
-log, value <span class="pl-k">=</span> writer.unwrap
-log <span class="pl-c"># =&gt; ["added 100", "added 140 more"]</span>
-value <span class="pl-c"># =&gt; 340</span></pre></div>
-
-<h3>
-<a id="fmap-3" class="anchor" href="#fmap-3" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>fmap</code>
-</h3>
-
-<div class="highlight highlight-ruby"><pre><span class="pl-k">require</span> <span class="pl-s1"><span class="pl-pds">"</span>kleisli<span class="pl-pds">"</span></span>
-
-writer <span class="pl-k">=</span> <span class="pl-vo">Writer</span>([], <span class="pl-c1">100</span>).fmap { |<span class="pl-vo">value</span>|
-  value <span class="pl-k">+</span> <span class="pl-c1">100</span>
-} <span class="pl-c"># =&gt; Writer([], 200)</span></pre></div>
-
-<h2>
 <a id="future" class="anchor" href="#future" aria-hidden="true"><span class="octicon octicon-link"></span></a>Future</h2>
 
 <p>The Future monad models a pipeline of computations that will happen in the future, as soon as the value needed for each step is available. It is useful to model, for example, a sequential chain of HTTP calls.</p>
@@ -374,7 +333,7 @@ writer <span class="pl-k">=</span> <span class="pl-vo">Writer</span>([], <span c
 lambdas, so you need to call <code>.call</code> on them. See the examples below.</p>
 
 <h3>
-<a id="--bind-4" class="anchor" href="#--bind-4" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+<a id="--bind-3" class="anchor" href="#--bind-3" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 <code>&gt;-&gt;</code> (bind)</h3>
 
 <div class="highlight highlight-ruby"><pre><span class="pl-k">require</span> <span class="pl-s1"><span class="pl-pds">"</span>kleisli<span class="pl-pds">"</span></span>
@@ -396,7 +355,7 @@ f.await <span class="pl-c"># =&gt; block until the whole pipeline is realized</s
 <span class="pl-c"># =&gt; { "my" =&gt; "response body" }</span></pre></div>
 
 <h3>
-<a id="fmap-4" class="anchor" href="#fmap-4" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>fmap</code>
+<a id="fmap-3" class="anchor" href="#fmap-3" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>fmap</code>
 </h3>
 
 <div class="highlight highlight-ruby"><pre><span class="pl-k">require</span> <span class="pl-s1"><span class="pl-pds">"</span>kleisli<span class="pl-pds">"</span></span>
@@ -410,18 +369,15 @@ f.await <span class="pl-c"># =&gt; block until the whole pipeline is realized</s
 <p>This was made by <a href="http://blog.txus.io">Josep M. Bach (Txus)</a> and <a href="https://github.com/rylev">Ryan
 Levick</a> under the MIT license. We are <a href="https://twitter.com/txustice">@txustice</a> and
 <a href="https://twitter.com/itchyankles">@itchyankles</a> on twitter (where you should probably follow us!).</p>
-      </section>
+        </section>
+
+        <footer>
+          Kleisli is maintained by <a href="https://github.com/txus">txus</a><br>
+          This page was generated by <a href="http://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.
+        </footer>
+
+        
+      </div>
     </div>
-
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Kleisli maintained by <a href="https://github.com/txus">txus</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
-      </footer>
-    </div>
-
-    
-
   </body>
 </html>
