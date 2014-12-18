@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class EitherTest < MiniTest::Unit::TestCase
+class EitherTest < Minitest::Test
   def test_lift_right
     assert_equal 3, Right(3).value
   end

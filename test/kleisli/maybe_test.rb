@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class MaybeTest < MiniTest::Unit::TestCase
+class MaybeTest < Minitest::Test
   def test_unwrapping_some
     assert_equal 3, Some(3).value
   end

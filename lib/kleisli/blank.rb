@@ -24,7 +24,7 @@ class Blank
     def hide(name)
       methods = instance_methods.map(&:to_sym)
       if methods.include?(name.to_sym) and
-        name !~ /^(__|instance_eval)/
+        name !~ /^(__|instance_eval|object_id)/
         @hidden_methods ||= {}
         @hidden_methods[name.to_sym] = instance_method(name)
         undef_method name

@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class CompositionTest < MiniTest::Unit::TestCase
+class CompositionTest < Minitest::Test
   def test_one_method
     f = F . first
     result = f.call([1])

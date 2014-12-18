@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class MonoidTest < MiniTest::Unit::TestCase
+class MonoidTest < Minitest::Test
   def test_string_fold
     assert_equal "hellogoodbye", "hello".fold(%w(good bye))
   end

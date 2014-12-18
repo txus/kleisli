@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class FutureTest < MiniTest::Unit::TestCase
+class FutureTest < Minitest::Test
   def test_immediate_value
     assert_equal 30, Future(30).await
   end
