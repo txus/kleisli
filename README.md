@@ -261,7 +261,7 @@ require "kleisli"
 
 add = -> x, y { x + y }
 Right(add) * Right(10) * Right(2)
-# => Some(12)
+# => Right(12)
 Right(add) * Left("error") * Right(2)
 # => Left("error")
 ```
