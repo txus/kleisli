@@ -1,17 +1,11 @@
 require_relative 'blank'
 
-class Proc
-  def self.comp(f, g)
-    lambda { |*args| f[g[*args]] }
-  end
-
-  def *(g)
-    Proc.comp(self, g)
-  end
-end
-
 module Kleisli
   class ComposedFn < Blank
+    def self.comp(f, g)
+      lambda { |*args| f[g[*args]] }
+    end
+
     def initialize(fns=[])
       @fns = fns
     end
@@ -32,7 +26,7 @@ module Kleisli
 
     def call(*args)
       if @fns.any?
-        @fns.reduce(:*).call(*args)
+        @fns.reduce { |f, g| ComposedFn.comp(f, g) }.call(*args)
       else
         args.first
       end
