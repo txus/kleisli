@@ -298,46 +298,6 @@ result # => Some(10)
 result # => None()
 ```
 
-## Writer
-
-The Writer monad is arguably the least useful monad in Ruby (as side effects
-are uncontrolled), but let's take a look at it anyway.
-
-It is used to model computations that *append* to some kind of state (which
-needs to be a Monoid, expressed in the `Kleisli::Monoid` mixin) at each step.
-
-(We've already implemented the Monoid interface for `String`, `Array`, `Hash`,
-`Fixnum` and `Float` for you.)
-
-An example would be a pipeline of computations that append to a log, for
-example a list of strings.
-
-### `>->` (bind)
-
-```ruby
-require "kleisli"
-
-writer = Writer([], 100) >-> value {
-  Writer(["added 100"], value + 100)
-} >-> value {
-  Writer(["added 140 more"], value + 140)
-} # => Writer(["added 100", "added 140 more"], 340)
-
-log, value = writer.unwrap
-log # => ["added 100", "added 140 more"]
-value # => 340
-```
-
-### `fmap`
-
-```ruby
-require "kleisli"
-
-writer = Writer([], 100).fmap { |value|
-  value + 100
-} # => Writer([], 200)
-```
-
 ## Future
 
 The Future monad models a pipeline of computations that will happen in the future, as soon as the value needed for each step is available. It is useful to model, for example, a sequential chain of HTTP calls.
