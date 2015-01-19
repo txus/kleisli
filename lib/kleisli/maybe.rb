@@ -18,6 +18,7 @@ module Kleisli
 
     def *(other)
       self >-> f {
+        f = f.to_proc
         other >-> val {
           Maybe.lift(f.arity > 1 ? f.curry.call(val) : f.call(val))
         }
