@@ -33,8 +33,12 @@ module Kleisli
         self
       end
 
-      def or(other)
-        other
+      def or(other, &other_blk)
+        if other_blk
+          other_blk.call
+        else
+          other
+        end
       end
 
       def to_s
@@ -56,7 +60,7 @@ module Kleisli
         block.call(@value)
       end
 
-      def or(other)
+      def or(other, &other_blk)
         self
       end
 
