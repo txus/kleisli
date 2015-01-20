@@ -66,7 +66,7 @@ module Kleisli
       end
 
       def to_s
-        "Some(#{@value})"
+        "Some(#{@value.inspect})"
       end
       alias inspect to_s
     end

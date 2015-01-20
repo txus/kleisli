@@ -39,6 +39,11 @@ module Kleisli
       def or(other=nil, &other_blk)
         self
       end
+
+      def to_s
+        "Right(#{@right.inspect})"
+      end
+      alias inspect to_s
     end
 
     class Left < Either
@@ -67,6 +72,11 @@ module Kleisli
           other
         end
       end
+
+      def to_s
+        "Left(#{@left.inspect})"
+      end
+      alias inspect to_s
     end
   end
 end
