@@ -36,7 +36,7 @@ module Kleisli
         Maybe::Some.new(@right)
       end
 
-      def or(other, &other_blk)
+      def or(other=nil, &other_blk)
         self
       end
     end
@@ -60,7 +60,7 @@ module Kleisli
         Maybe::None.new
       end
 
-      def or(other, &other_blk)
+      def or(other=self, &other_blk)
         if other_blk
           other_blk.call(@left)
         else

@@ -34,7 +34,7 @@ module Kleisli
         self
       end
 
-      def or(other=None(), &other_blk)
+      def or(other=self, &other_blk)
         if other_blk
           other_blk.call
         else
@@ -61,7 +61,7 @@ module Kleisli
         block.call(@value)
       end
 
-      def or(other=None(), &other_blk)
+      def or(other=nil, &other_blk)
         self
       end
 
