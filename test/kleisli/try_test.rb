@@ -17,6 +17,14 @@ class TryTest < Minitest::Test
     assert_equal None(), Try { 10 / 0 }.to_maybe
   end
 
+  def test_to_either_success
+    assert_equal Right(2), Try { 10 / 5 }.to_either
+  end
+
+  def test_to_either_failure
+    assert_kind_of ZeroDivisionError, Try { 10 / 0 }.to_either.left
+  end
+
   def test_fmap_success
     assert_equal 4, Try { 10 / 5 }.fmap { |x| x * 2 }.value
   end

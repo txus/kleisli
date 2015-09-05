@@ -29,6 +29,10 @@ module Kleisli
       def to_maybe
         Maybe::Some.new(@value)
       end
+
+      def to_either
+        Either::Right.new(@value)
+      end
     end
 
     class Failure < Try
@@ -46,6 +50,10 @@ module Kleisli
 
       def to_maybe
         Maybe::None.new
+      end
+
+      def to_either
+        Either::Left.new(@exception)
       end
     end
   end
