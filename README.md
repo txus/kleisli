@@ -192,6 +192,22 @@ Try { JSON.parse(json_string) }.fmap(&:symbolize_keys).to_maybe
 # => None()
 ```
 
+### `to_either`
+
+Sometimes it's useful to interleave both `Try` and `Either`. To convert a `Try`
+into a `Either` you can use `to_either`:
+
+```ruby
+require "kleisli"
+
+Try { JSON.parse(json_string) }.fmap(&:symbolize_keys).to_either
+
+# If everything went well:
+# => Right({ :my => "json", :with => "symbolized keys" })
+# If an exception was thrown:
+# => Left(#<JSON::ParserError: 757: unexpected token at 'json'>)
+```
+
 ## Either
 
 The Either monad is useful to express a pipeline of computations that might return an error object with some information.
