@@ -1,7 +1,5 @@
-require_relative 'blank'
-
 module Kleisli
-  class ComposedFn < Blank
+  class ComposedFn < BasicObject
     def self.comp(f, g)
       lambda { |*args| f[g[*args]] }
     end
