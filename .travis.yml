@@ -2,17 +2,13 @@ language: ruby
 
 dist: trusty
 
-rvm:
-  - 2.1
-  - 2.2
-  - 2.3.3
-  - 2.4.0
-  - jruby-9.1.7.0
-  - ruby-head
-  - jruby-head
-
 matrix:
   include:
+    - rvm: 2.1
+    - rvm: 2.2
+    - rvm: 2.3.3
+    - rvm: 2.4.0
+    - rvm: ruby-head
     - rvm: jruby-head
       env: "JRUBY_OPTS=--debug"
       before_install:
