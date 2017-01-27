@@ -1,14 +1,24 @@
 language: ruby
+
 dist: trusty
+
 rvm:
   - 2.1
   - 2.2
   - 2.3.3
   - 2.4.0
   - jruby-9.1.7.0
-  - rbx-2
   - ruby-head
   - jruby-head
 
+matrix:
+  include:
+    - rvm: jruby-head
+      env: "JRUBY_OPTS=--debug"
+      before_install:
+        - gem install bundler -v'1.13.7'
+    - rvm: jruby-9.1.7.0
+      env: "JRUBY_OPTS=--debug"
+
 script:
-- rake
+  - rake
