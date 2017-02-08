@@ -44,6 +44,14 @@ module Kleisli
         "Right(#{@right.inspect})"
       end
       alias inspect to_s
+
+      def success?
+        true
+      end
+
+      def failure?
+        false
+      end
     end
 
     class Left < Either
@@ -77,6 +85,14 @@ module Kleisli
         "Left(#{@left.inspect})"
       end
       alias inspect to_s
+
+      def success?
+        false
+      end
+
+      def failure?
+        true
+      end
     end
   end
 end

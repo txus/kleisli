@@ -36,4 +36,20 @@ class MaybeTest < Minitest::Test
   def test_applicative_functor_none
     assert_equal None(), Maybe(-> x, y { x * y }) * None() * Maybe(2)
   end
+
+  def test_left_succesful
+    assert_equal None().success?, false
+  end
+
+  def test_right_succesful
+    assert_equal Some(20).success?, true
+  end
+
+  def test_left_failure
+    assert_equal None().failure?, true
+  end
+
+  def test_right_failure
+    assert_equal Some(20).failure?, false
+  end
 end
