@@ -4,6 +4,11 @@ module Kleisli
   class Maybe < Monad
     attr_reader :value
 
+    def value!
+      raise Kleisli::Maybe::UnwrappedNoneError unless value
+      value
+    end
+
     def self.lift(value)
       if value.nil?
         None.new
