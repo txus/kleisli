@@ -6,7 +6,7 @@ class MaybeTest < Minitest::Test
   end
 
   def test_unwrapping_none
-    assert_equal nil, None().value
+    assert_nil None().value
   end
 
   def test_bind_none
