@@ -352,6 +352,26 @@ Future { expensive_operation }.fmap { |x| x * 2 }.await
 # => result of expensive_operation * 2
 ```
 
+## Safe Mode
+
+If you do not want to pollute Ruby's global namespace, you can load Kleisli in safe mode and include the DSL manually. Remember to add `require: false` to the gemfile.
+```ruby
+require "kleisli/safe"
+defined?(F)
+# => nil
+class Example
+  include Kleisli::DSL
+  def f?; defined?(F); end
+  def r7; F . unshift(7) . reverse; end
+end
+Example.new.f?
+# => "constant"
+Example.new.r7.call([1,2,3])
+# => [7, 3, 2, 1]
+defined?(F)
+# => nil
+```
+
 ## Who's this
 
 This was made by [Josep M. Bach (Txus)](http://blog.txus.io) and [Ryan
