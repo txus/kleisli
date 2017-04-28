@@ -1,3 +1,2 @@
-require "kleisli/version"
-require "kleisli/globals"
+require "kleisli/safe"
 include Kleisli::Globals
