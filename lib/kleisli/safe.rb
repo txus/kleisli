@@ -1,2 +1,2 @@
 require "kleisli/version"
-require "kleisli/globals"
+require "kleisli/dsl"

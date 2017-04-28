@@ -1,2 +1,2 @@
 require "kleisli/safe"
-include Kleisli::Globals
+include Kleisli::DSL

@@ -5,7 +5,7 @@ require "kleisli/try"
 require "kleisli/future"
 
 module Kleisli
-  module Globals
+  module DSL
     ### kleisli/composition ###
     F = Kleisli::ComposedFn.new
 
