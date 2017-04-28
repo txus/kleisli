@@ -35,5 +35,3 @@ module Kleisli
     end
   end
 end
-
-F = Kleisli::ComposedFn.new

@@ -80,14 +80,3 @@ module Kleisli
     end
   end
 end
-
-Right = Kleisli::Either::Right.method(:new)
-Left = Kleisli::Either::Left.method(:new)
-
-def Right(v)
-  Kleisli::Either::Right.new(v)
-end
-
-def Left(v)
-  Kleisli::Either::Left.new(v)
-end

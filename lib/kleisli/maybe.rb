@@ -72,17 +72,3 @@ module Kleisli
     end
   end
 end
-
-Maybe = Kleisli::Maybe.method(:lift)
-
-def Maybe(v)
-  Maybe.(v)
-end
-
-def None()
-  Maybe(nil)
-end
-
-def Some(v)
-  Maybe(v)
-end

@@ -58,7 +58,3 @@ module Kleisli
     end
   end
 end
-
-def Try(&f)
-  Kleisli::Try.lift(f)
-end
