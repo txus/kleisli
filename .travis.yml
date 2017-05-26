@@ -13,7 +13,7 @@ matrix:
       env: "JRUBY_OPTS=--debug"
       before_install:
         - gem install bundler -v'1.13.7'
-    - rvm: jruby-9.1.7.0
+    - rvm: jruby-9.1.10.0
       env: "JRUBY_OPTS=--debug"
 
 script:
