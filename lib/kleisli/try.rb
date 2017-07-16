@@ -22,8 +22,8 @@ module Kleisli
         Failure.new(e)
       end
 
-      def fmap(&f)
-        Try { f.call(@value) }
+      def fmap(f = nil, &block)
+        Try { (f || block).call(@value) }
       end
 
       def to_maybe
@@ -44,7 +44,7 @@ module Kleisli
         self
       end
 
-      def fmap(&f)
+      def fmap(_f = nil)
         self
       end
 

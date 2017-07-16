@@ -28,8 +28,8 @@ module Kleisli
         f.call(@right)
       end
 
-      def fmap(&f)
-        Right.new(f.call(@right))
+      def fmap(f = nil, &block)
+        Right.new((f || block).call(@right))
       end
 
       def to_maybe
@@ -57,7 +57,7 @@ module Kleisli
         self
       end
 
-      def fmap(&f)
+      def fmap(_f = nil)
         self
       end
 

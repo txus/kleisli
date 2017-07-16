@@ -26,7 +26,7 @@ module Kleisli
     end
 
     class None < Maybe
-      def fmap(&f)
+      def fmap(_f = nil)
         self
       end
 
@@ -53,8 +53,8 @@ module Kleisli
         @value = value
       end
 
-      def fmap(&f)
-        Maybe.lift(f.call(@value))
+      def fmap(f = nil, &block)
+        Maybe.lift((f || block).call(@value))
       end
 
       def >(block)
