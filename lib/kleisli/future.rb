@@ -18,8 +18,8 @@ module Kleisli
       f.call(-> { await })
     end
 
-    def fmap(&f)
-      Future.lift(f.call(-> { await }))
+    def fmap(f = nil, &block)
+      Future.lift((f || block).call(-> { await }))
     end
 
     def await
