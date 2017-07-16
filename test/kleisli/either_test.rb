@@ -58,4 +58,8 @@ class EitherTest < Minitest::Test
   def test_applicative_functor_left
     assert_equal Left("error"), Right(-> x, y { x * y }) * Left("error") * Right(2)
   end
+
+  def test_equality_with_other_type
+    refute_equal nil, Right(nil)
+  end
 end

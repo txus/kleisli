@@ -13,7 +13,7 @@ module Kleisli
     end
 
     def ==(other)
-      value == other.value
+      is_a?(other.class) && value == other.value
     end
 
     def *(other)
