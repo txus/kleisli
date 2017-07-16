@@ -36,4 +36,8 @@ class MaybeTest < Minitest::Test
   def test_applicative_functor_none
     assert_equal None(), Maybe(-> x, y { x * y }) * None() * Maybe(2)
   end
+
+  def test_equality_with_other_type
+    refute_equal nil, None()
+  end
 end

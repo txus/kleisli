@@ -6,7 +6,7 @@ module Kleisli
     attr_reader :right, :left
 
     def ==(other)
-      right == other.right && left == other.left
+      is_a?(other.class) && right == other.right && left == other.left
     end
 
     def *(other)
