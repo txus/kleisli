@@ -10,11 +10,13 @@ matrix:
     - rvm: 2.4.0
     - rvm: ruby-head
     - rvm: jruby-head
-      env: "JRUBY_OPTS=--debug"
       before_install:
-        - gem install bundler -v'1.13.7'
-    - rvm: jruby-9.1.7.0
-      env: "JRUBY_OPTS=--debug"
+        - gem install bundler
+    - rvm: jruby-9.1.14.0
 
 script:
   - rake
+
+env:
+  global:
+    - JRUBY_OPTS="--debug"
