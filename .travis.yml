@@ -17,6 +17,6 @@ matrix:
 script:
   - rake
 
-global:
-  env:
+env:
+  global:
     - JRUBY_OPTS="--debug"
