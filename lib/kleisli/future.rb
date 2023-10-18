@@ -27,7 +27,3 @@ module Kleisli
     end
   end
 end
-
-def Future(v=nil, &block)
-  Kleisli::Future.lift(v, &block)
-end
