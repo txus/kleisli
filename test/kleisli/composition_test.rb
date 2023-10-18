@@ -4,14 +4,14 @@ class CompositionTest < Minitest::Test
   def test_one_method
     f = F . first
     result = f.call([1])
-    assert Fixnum === result, "#{result} is not a number"
+    assert Integer === result, "#{result} is not a number"
     assert_equal 1, result
   end
 
   def test_two_methods
     f = F . first . last
     result = f.call([1, [2,3]])
-    assert Fixnum === result, "#{result} is not a number"
+    assert Integer === result, "#{result} is not a number"
     assert_equal 2, result
   end
 
@@ -20,7 +20,7 @@ class CompositionTest < Minitest::Test
 
     f = F . fn(&my_first)
     result = f.call([1])
-    assert Fixnum === result, "#{result} is not a number"
+    assert Integer === result, "#{result} is not a number"
     assert_equal 1, result
   end
 
@@ -30,7 +30,7 @@ class CompositionTest < Minitest::Test
 
     f = F . fn(&my_first) . fn(&my_last)
     result = f.call([1, [2,3]])
-    assert Fixnum === result, "#{result} is not a number"
+    assert Integer === result, "#{result} is not a number"
     assert_equal 2, result
   end
 
@@ -39,7 +39,7 @@ class CompositionTest < Minitest::Test
 
     f = F . fn { |x| x.first } . fn(&my_last)
     result = f.call([1, [2,3]])
-    assert Fixnum === result, "#{result} is not a number"
+    assert Integer === result, "#{result} is not a number"
     assert_equal 2, result
   end
 
@@ -48,7 +48,7 @@ class CompositionTest < Minitest::Test
 
     f = F . first . fn(&my_last)
     result = f.call([1, [2,3]])
-    assert Fixnum === result, "#{result} is not a number"
+    assert Integer === result, "#{result} is not a number"
     assert_equal 2, result
   end
 
