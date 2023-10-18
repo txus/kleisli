@@ -33,6 +33,14 @@ module Kleisli
       def to_either
         Either::Right.new(@value)
       end
+
+      def success?
+        true
+      end
+
+      def failure?
+        false
+      end
     end
 
     class Failure < Try
@@ -54,6 +62,14 @@ module Kleisli
 
       def to_either
         Either::Left.new(@exception)
+      end
+
+      def success?
+        false
+      end
+
+      def failure?
+        true
       end
     end
   end

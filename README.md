@@ -136,6 +136,15 @@ Some(add) * None() * Some(2)
 # => None
 ```
 
+### `success?` and `failure?`
+
+```ruby
+require "kleisli"
+
+None().success? # => false
+Some("Monad Stree").success? # => true
+```
+
 ## Try
 
 The Try monad is useful to express a pipeline of computations that might throw
@@ -206,6 +215,14 @@ Try { JSON.parse(json_string) }.fmap(&:symbolize_keys).to_either
 # => Right({ :my => "json", :with => "symbolized keys" })
 # If an exception was thrown:
 # => Left(#<JSON::ParserError: 757: unexpected token at 'json'>)
+```
+
+### `success?` and `failure?`
+
+```ruby
+require "kleisli"
+
+Try { raise 'a failure' }.success? # => false
 ```
 
 ## Either
@@ -312,6 +329,14 @@ end.to_maybe
 result # => Some(10)
 # If it didn't
 result # => None()
+```
+
+### `success?` and `failure?`
+
+```ruby
+require "kleisli"
+
+lefts, rights = [Right(20), Left('10 is too small'), Right(11)].partition(&:failure?)
 ```
 
 ## Future

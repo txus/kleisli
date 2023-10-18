@@ -46,6 +46,14 @@ module Kleisli
         "None"
       end
       alias inspect to_s
+
+      def success?
+        false
+      end
+
+      def failure?
+        true
+      end
     end
 
     class Some < Maybe
@@ -69,6 +77,14 @@ module Kleisli
         "Some(#{@value.inspect})"
       end
       alias inspect to_s
+
+      def success?
+        true
+      end
+
+      def failure?
+        false
+      end
     end
   end
 end
