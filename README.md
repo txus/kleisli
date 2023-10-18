@@ -1,4 +1,4 @@
-# Kleisli [![Build Status](https://secure.travis-ci.org/txus/kleisli.svg)](http://travis-ci.org/txus/kleisli)
+# Kleisli [![CI](https://github.com/txus/kleisli/actions/workflows/ci.yml/badge.svg)](https://github.com/txus/kleisli/actions/workflows/ci.yml)
 
 An idiomatic, clean implementation of a few common useful monads in Ruby,
 written by [Ryan Levick][rylev] and me.
